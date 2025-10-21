@@ -13,6 +13,17 @@
     <p>Tohle bude home stranka<br>
         <i>Na home strance bude navbar a vylistovani nejnovejsich nabidek<br></i>
         <b>Uprav kdyztak tenhle tucnej text at jsem si jistej ze git repo fr funguje</b>
+        <b>CAUUUU</b>
     </p>
+    
+    
+    <?php
+    for($i = 0; $i < 10; $i++){
+        echo($i . "<br>");
+    }
+
+
+    ?>
+
 </body>
 </html>
