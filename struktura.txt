@@ -1,0 +1,45 @@
+root:
+index.php
+.htaccess (?)
+/config/
+	config.php (db konfigurace, globalni variables)
+	init.php (sessions, autoloady?)
+/public/
+	/styles/ (css)
+	/js/ (FE scripty)
+	/images/ (? nebo budou vsechny v db?)kvuli splneni zadani "prace se soubory"
+	/uploads/ (? sem docasne ukladat obrazky od uzivatelu?)kvuli splneni zadani"prace se soubory"
+
+/includes/	(to co maj vsechny stranky spolecny)
+	navbar
+	header
+	footer
+	functions.php (pomocny funkce)
+
+/pages/
+	offers.php (vylistovani nabidek, at uz vsech nebo podle kategorie)
+	profile.php (info o uzivateli, historie obj, prehled nabidek)
+	profile_edit.php (editace info o uzivateli)
+	offer_create.php (stranka na tvoreni nabidek)
+	offer_update.php (stranka pro edit nabidek)
+	login.php (stranka s prihlasenim)
+	logout.php (stranka co se zobrazi ve spec. pripade kdyz se uzivatel odhlasi a byl na strance profile.php)
+	register.php (stranka na vytvoreni uctu)
+
+
+
+tabulky db:
+
+users
+
+offers (vsechny nabidky)
+
+orders (spojeni uzivatelu s jejich nabidkami - propojeni pres users.id a offers.id)
+
+user_images (pfp uzivatelu - propojeni podle users.id)
+
+offer_images (obrazky v nabidkach - propojeni podle offers.id)
+
+categories (kategorie nabidek - propojeni podle offers.id)
+
+
