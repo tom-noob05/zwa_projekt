@@ -11,4 +11,4 @@ Přihlášení uživatelé mohou nabídky navíc tvořit a kupovat.
 
 Kvůli daným omezením v zadání projektu probíhá platba domluvou mezi prodávajícím a kupujícím uživatelem.
 
-
+_Na projektu pracují: Tomáš Mamica, Tadeáš Krása_
