@@ -1,0 +1,9 @@
+Budou primarni funkce (vytvoreni nabidky, smazani nabidky, kupovani nabidek, ...) na strankach?
+Nebo bude lepsi pouzit controllery? (OfferController, UserController, BuyController, ...)
+
+Dalo by se to delat takhle:
+FE udela napr. stranku registrace. Uzivatel zada username, surname, ... a klikne na odeslat.
+FE vezme data, zabali je do JSON a to posle na BE endpoint, treba do UserController,
+kde bude funkce na vytvoreni uzivatele pomoci dat, ktere prisly jako parametr v JSON.
+
+Za me je tohle daleko lepe skalovatelny postup, nez funkcionalitu resit napr. primo na strance register.php.
