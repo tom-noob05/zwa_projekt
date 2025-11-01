@@ -11,4 +11,4 @@ require_once 'config.php';
 
 require_once APP_ROOT . '/includes/functions.php';
 
-print_r(APP_ROOT);
+// print_r(APP_ROOT);
