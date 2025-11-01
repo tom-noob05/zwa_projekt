@@ -1,9 +1,9 @@
 <nav class="navbar">
-    <a  href="/"">Community Marketplace</a>
+    <a  href="/">Community Marketplace</a>
     <select id="categories-dropdown">
         <option>Kategorie 0<option>
         <option>Kategorie 1<option>
         <option>Kategorie 2<option>    
     </select>
-    <a href="login.php"><button id="login">Log In</butotn></a>
+    <button id="login"><a href="login.php">Log In</a></butotn>
 </nav>
