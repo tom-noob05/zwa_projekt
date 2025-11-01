@@ -1,5 +1,5 @@
 <?php
-
+//tahle zmena se trackovat muze
 define('DB_HOST', 'doplnit'); //DB_HOST
 define('DB_NAME', 'doplnit'); //DB_NAME
 define('DB_USER', 'doplnit'); //DB_USER - jako root? Nebo udelame dalsiho uzivatele pro web. app?
