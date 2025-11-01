@@ -5,5 +5,5 @@
         <option>Kategorie 1<option>
         <option>Kategorie 2<option>    
     </select>
-    <button id="login"><a href="login.php">Log In</a></butotn>
+    <button id="login"><a href="/pages/login.php">Log In</a></butotn>
 </nav>
