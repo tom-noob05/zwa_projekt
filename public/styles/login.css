@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    background-color: rgb(230,230,230);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#login {
+    display: none;
+}
+
+#categories-dropdown {
+    display: none;
+}
+form{
+    
+    margin: 10px auto;
+    padding: 10px 10px;
+    border: 1px solid black;
+}
+input {
+    display: block;
+    margin: auto;
+}
