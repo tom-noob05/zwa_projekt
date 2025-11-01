@@ -1,3 +1,8 @@
+<?php require_once 'config/init.php'; 
+// testFunction("yayy");
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
