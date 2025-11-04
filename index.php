@@ -1,5 +1,10 @@
 <?php require_once 'config/init.php'; 
 // testFunction("yayy");
+// echo "user: <br>";
+// print_r($_SESSION['user']);
+
+// destroySession();
+
 ?>
 
 

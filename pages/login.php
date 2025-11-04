@@ -1,7 +1,34 @@
 <?php
-// logika zpracovani prhlaseni
-// je potreba pouzit pripojeni k DB z config.php a vytvorit query (osetrit SQL injection),
-// pokud je spravne username a heslo, nastavi se to do session pod treba $user_id, $username a presmeruje se na index.php 
+require_once '../config/init.php';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // natahne se zaznam z 'users'
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?;");
+    $stmt->execute([$username]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password']))
+    {
+        
+        $_SESSION['user'] = $user;
+        
+        ?><script>
+            alert("Logged In!");
+        </script><?php
+
+        header("Location: /index.php");
+    }else{
+        // $_SESSION['user_id'] = $user['id'];
+        
+        ?><script>
+            alert("User doesn't exist.");
+        </script><?php
+    }
+}
 
 ?>
 
@@ -24,6 +51,7 @@
         <label for="password">Password: </label>
         <input type="password" name="password"><br>
         <input type="submit" value="Log In">
+        <p>Don't have an account? <a href='/pages/register.php'>Make a new one.</a>
     </form>
 
 

@@ -3,7 +3,7 @@
 
 if (session_status() == PHP_SESSION_NONE)
 {
-    // session_start();
+    session_start();
     // echo "zapnula by se session<br>";
 }
 
