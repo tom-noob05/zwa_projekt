@@ -18,9 +18,6 @@
     <link rel = "stylesheet" href = "/public/styles/navbar.css">
 </head>
 <body>
-    <!-- <div class = 'navbar'>
-        <a href="index.php">Community Marketplace</a>
-    </div> -->
     <?php include 'includes/navbar.php';?>
 
     <div class = 'content'>
