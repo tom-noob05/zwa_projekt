@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         <label for="password">Password: </label>
         <input type="password" name="password"><br>
         <input type="submit" value="Log In">
-        <p>Don't have an account? <a href='/pages/register.php'>Make a new one.</a>
+        <p>Don't have an account? <a href='/pages/register.php'>Register a new one.</a>
     </form>
 
 
