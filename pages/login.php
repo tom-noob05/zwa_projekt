@@ -34,26 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In</title>
-    <link rel = "stylesheet" href = "/public/styles/navbar.css">
-    <link rel = "stylesheet" href = "/public/styles/login.css">
+    <title>Login</title>
+    <link rel="stylesheet" href="../public/styles/login.css">
 </head>
 <body>
-    <?php include '../includes/navbar.php';?>
 
-    <form method="POST" action="login.php">
-        <label for="username">Username: </label>
-        <input type="text" name="username"><br>
-        <label for="password">Password: </label>
-        <input type="password" name="password"><br>
-        <input type="submit" value="Log In">
-        <p>Don't have an account? <a href='/pages/register.php'>Register a new one.</a>
-    </form>
-
+    <div class="card">
+        <h2>Login</h2>
+        <form>
+            <input type="email" placeholder="Email:" required>
+            <input type="password" placeholder="Heslo:" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 
 </body>
 </html>
