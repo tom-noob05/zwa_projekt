@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="public/styles/navbar.css">
 <nav class="navbar">
     <section class="links">
-        <a href="/" class="nav-link">Market place</a>
+        <a href="/" class="nav-link">Home</a>
 
         <div class="dropdown">
             <a href="#" class="nav-link">Kategorie</a>
@@ -36,4 +36,4 @@
 
 </nav>
 
-<script src='public/js/navbar.js'></script>
+<script src='/public/js/navbar.js'></script>

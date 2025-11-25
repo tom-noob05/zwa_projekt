@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 <body>
     <?php include '../includes/navbar.php';?>
 
-    <form method="POST" action="register.php" onsubmit="return validatePassword()">
+    <form method="POST" action="" onsubmit="return validatePassword()">
         <label for="jmeno">Jmeno: </label>
         <input type="text" name="jmeno" required><br>
         <label for="prijmeni">Prijmeni: </label>
