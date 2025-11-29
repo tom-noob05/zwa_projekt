@@ -1,11 +1,17 @@
 <?php require_once '../config/init.php'; 
     
-    if (empty($_SESSION['user']))
+    if (empty($_SESSION['user_id']))
     {
         header("Location: /pages/login.php");
     }
     
-    $user = $_SESSION['user'];
+    if (!empty($_SESSION['user_id']) && isset($pdo))
+    {
+        $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `id` = ? LIMIT 1;");
+        $stmt->execute([$_SESSION['user_id']]);
+        $fetched_data = $stmt->fetch();
+        if (!empty($fetched_data)) $user = $fetched_data;
+    }
 
 ?>
 

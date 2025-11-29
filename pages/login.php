@@ -1,13 +1,18 @@
 <?php
 require_once '../config/init.php';
 
+// zalozeni promennych k pozdejsimu hlaseni chyb / vraceni hodnoty do formulare
 $usernameValue = '';
 $errorMsg = '';
 
+redirectIfLoggedIn();
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
+    // kouknout, jestli prislo neco v POST
     if(!empty($_POST))
     {
+        // ulozti hodnoty z formulare
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? '');
 
@@ -18,12 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             $stmt->execute([$username]);
             $user = $stmt->fetch();
 
+            // verifikace hesla
             if ($user && password_verify($password, $user['password']))
             {
-                $_SESSION['user'] = $user;
+                $_SESSION['user_id'] = $user['id'];
                 header("Location: /index.php");
                 exit;
-            } else {        
+            } else {
                 $errorMsg = "Wrong username or password.";
             }
         }
@@ -41,9 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="../public/styles/login.css">
+    <link rel = "stylesheet" href = "/public/styles/navbar.css">
 </head>
 <body>
 
+    <?php include '../includes/navbar.php';?>
+<div class = "wrapper">
     <div class="card">
 
         <h2>Login</h2>
@@ -59,10 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             <button type="submit">Login</button>
 
         </form>
-
+        <hr>
         <a href="/pages/register.php">Don't have an account? Register a new one.</a>
         
     </div>
+</div>
 
     <script src = "/public/js/login.js"></script>
 

@@ -1,6 +1,8 @@
 <?php
 require_once '../config/init.php';
 
+redirectIfLoggedIn();
+
 $alertMessage = null;
 $redirectUrl = null;
 
