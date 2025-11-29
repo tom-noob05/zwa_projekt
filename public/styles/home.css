@@ -28,6 +28,8 @@ body {
     border: 3px solid black;
     box-sizing: border-box;
     flex-grow: 1;
+    background-color: #353535;
+    color: #D9D9D9;
 }
 
 .footer {
@@ -38,6 +40,7 @@ body {
     border: 5px solid red;
     padding:5px;
     font-size: 15px;
+    background-color: #3A6B74;
 }
 
 

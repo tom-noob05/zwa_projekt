@@ -17,3 +17,12 @@ if (ini_get("session.use_cookies")) {
 }
 session_destroy();
 }
+
+function redirectIfLoggedIn()
+{
+    if (!empty($_SESSION['user_id']))
+    {
+        header('Location: /index.php');
+        exit;
+    }
+}

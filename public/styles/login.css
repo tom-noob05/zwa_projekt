@@ -3,17 +3,25 @@ body {
     padding: 0;
     background-color: #353535;
     font-family: sans-serif;
+    /*display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;*/
+}
+
+.wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: calc(100vh - 80px);
+    width: 100%;
 }
 
 .card {
     background-color: #284B63;
     padding: 50px 40px;
     border-radius: 8px;
-    width: 300px;
+    width: 400px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -76,4 +84,12 @@ button:hover {
     margin-bottom: 10px;
     font-weight: bold;
     color: red;
+}
+
+a {
+    color: #D9D9D9;
+}
+
+hr {
+    visibility: hidden;
 }
