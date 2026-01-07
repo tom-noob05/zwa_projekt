@@ -9,7 +9,6 @@ if (!isset($_SESSION['user_id'])) {
 
 //nacteni kategorii
 try {
-    // Načteme ID a jméno, seřazené podle abecedy
     $stmt_cat = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
     $categories = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
