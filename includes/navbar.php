@@ -1,9 +1,6 @@
 <?php
 
-                                        /*      TODO        */
-    // opravit animaci :hover prvku .account-button. Je potreba, aby se animace zobrazovala samostatne
-    // pro tlacitka Log Out / Log In a vypsane username
-    // problem se objevil po pridani animace tride .account-button
+
 
 if (!empty($_SESSION['user_id']) && isset($pdo))
 {
@@ -11,6 +8,19 @@ if (!empty($_SESSION['user_id']) && isset($pdo))
     $stmt->execute([$_SESSION['user_id']]);
     $fetched_data = $stmt->fetch();
     if (!empty($fetched_data)) $user = $fetched_data;
+
+
+}
+
+if (isset($pdo)){
+    try{
+    $sql = "SELECT * from `categories`;";
+    $stmt = $pdo->query($sql);
+    $categories = $stmt->fetchAll();
+    // echo "KATEGORIE JDOU";
+    }catch (\PDOException $e){
+        echo json_encode(['error' => $e.getMessage()]);
+    }
 }
 
 $currentPage = basename($_SERVER['SCRIPT_NAME']);
@@ -25,9 +35,11 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
             <div class="dropdown">
                 <a href="#" class="nav-link">Kategorie</a>
                 <div class="dropdown-content">
-                    <a>Kategorie 0</a>
-                    <a>Kategorie 1</a>
-                    <a>Kategorie 2</a>
+
+                    <?php foreach($categories as $category){ ?> 
+                        <a><?php echo(htmlspecialchars($category['name'])); ?></a>
+                    <?php } ?>
+
                 </div>
             </div>
     </section>
@@ -36,12 +48,12 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
             <?php if ($currentPage !== 'profile.php') { ?> 
                 <a href='/pages/profile.php' id='username'><?php echo(htmlspecialchars($user['username'])); ?></a> 
             <?php } ?>
-            <button id='logoutbtn' class='navbar-button' onclick="confirmLogout()">Log Out</button>
+            <button id='logoutbtn' class='navbar-button' >Log Out</button>
         </div>
 
     <?php
     } else { ?>
-        <div class='account-button' onclick="location.href='/pages/login.php'">
+        <div class='account-button'>
             <button id="loginbtn" class='navbar-button'>Log In</button>
         </div>
     <?php
