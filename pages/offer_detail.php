@@ -1,3 +1,9 @@
+<?php 
+require_once '../config/init.php';
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -14,17 +20,18 @@
         <h1 id="offer-name" class="name">Načítám...</h1>
         
         <img id="offer-img" src="../misc/1092132_polstarek-kocicka-30x45-cm.jpeg" alt="obrazek inzeratu">
-        
+        <hr>
         <p class="price">Cena: <span id="offer-price">--</span> Kč</p>
+        <hr>
         <p class="category">Kategorie: <span id="offer-category">--</span></p>
+        <hr>
         <p class="condition">Kondice: <span id="offer-condition">--</span></p>
-        
+        <hr>
         <div class="description-box">
             <h3>Popis:</h3>
             <p id="offer-description" class="popis">--</p>
         </div>
-
-        <p class="location">Lokace: <span id="offer-location">Nezadána</span></p>
+        <hr>
 
         <button>BUY</button>
     </div>

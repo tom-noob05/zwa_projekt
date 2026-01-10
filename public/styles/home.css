@@ -3,10 +3,14 @@ html {
     height: 100%;
 }
 
-* {
+*:not(.navbar, body) {
     margin: 2px;
     padding: 0;
     box-sizing: border-box;
+}
+
+.navbar{
+    margin:0px;
 }
 
 body {

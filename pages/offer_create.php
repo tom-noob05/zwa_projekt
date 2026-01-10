@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="form-group">
                     <label for="price">Cena:</label>
-                    <input type="number" id="price" name="price" step="10" required placeholder="1000">
+                    <input type="number" id="price" name="price" required placeholder="1000">
                 </div>
 
                 <div class="form-group">
