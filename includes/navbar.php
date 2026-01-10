@@ -20,9 +20,11 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
 <link rel="stylesheet" href="/public/styles/navbar.css">
 <nav class="navbar">
     <section class="links">
-        <a href="/" class="nav-link"><b>Home</b></a>
-        <?php if ($currentPage !== 'login.php' && $currentPage !== 'register.php'){?>
-            <div class="dropdown">
+        <div class="nav-item">
+            <a href="/" class="nav-link"><b>Home</b></a>
+        </div>
+        <?php if ($currentPage !== 'login.php' && $currentPage !== 'register.php'): ?>
+            <div class="nav-item dropdown">
                 <a href="#" class="nav-link">Kategorie</a>
                 <div class="dropdown-content">
                     <a>Kategorie 0</a>
@@ -30,25 +32,27 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
                     <a>Kategorie 2</a>
                 </div>
             </div>
+        <?php endif; ?>
     </section>
-    <?php if (!empty($user)) { ?>
-        <div class='account-button'>
-            <?php if ($currentPage !== 'profile.php') { ?> 
-                <a href='/pages/profile.php' id='username'><?php echo(htmlspecialchars($user['username'])); ?></a> 
-            <?php } ?>
-            <button id='logoutbtn' class='navbar-button' onclick="confirmLogout()">Log Out</button>
-        </div>
 
-    <?php
-    } else { ?>
-        <div class='account-button' onclick="location.href='/pages/login.php'">
-            <button id="loginbtn" class='navbar-button'>Log In</button>
-        </div>
-    <?php
-    }
-    }
-    ?>
+    <section class="account-section">
+        <?php if (!empty($user)): ?>
+            <?php if ($currentPage !== 'profile.php'): ?> 
+                <div class="nav-item clickable" onclick="location.href='/pages/profile.php'">
+                    <span id="username"><?php echo htmlspecialchars($user['username']); ?></span>
+                </div>
+            <?php endif; ?>
+            
+            <div class="nav-item clickable" onclick="confirmLogout()">
+                <button id="logoutbtn" class="navbar-button">Log Out</button>
+            </div>
 
+        <?php else: ?>
+            <div class="nav-item clickable" onclick="location.href='/pages/login.php'">
+                <button id="loginbtn" class="navbar-button">Log In</button>
+            </div>
+        <?php endif; ?>
+    </section>
 </nav>
 
 <script src='/public/js/navbar.js'></script>
