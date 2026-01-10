@@ -21,71 +21,48 @@
 <body>
     <?php include 'includes/navbar.php'; ?>
     <div class="category">
-        <p>Kategorie: KOCICKY</p>
     </div>
     <div class='content'>
-        <div class="offer" id="0">
-            <img src="/misc/1092132_polstarek-kocicka-30x45-cm.jpeg" alt="obrazek inzeratu">
-            <p class="offer_name">Kocicka 0</p>
-            <a href="pages\offer_detail.php">see more</a>
+        <div class='content' id="main-offers-container">
         </div>
     </div>
 
-    <!-- 
-    <footer class='footer'>
-        <p>Footer</p>
-    </footer> -->
 </body>
+
 <script>
-    // 1. Získáme referenci na kontejner, kam budeme prvky vkládat
-    const contentContainer = document.querySelector('.content');
+    function loadOffers() {
+    const contentArea = document.getElementById('main-offers-container');
 
-    // 2. Získáme referenci na stávající "offer" element, který použijeme jako šablonu
-    // Všimněte si, že ho nemusíme kopírovat, stačí ho získat a pak klonovat.
-    const originalOffer = document.getElementById('0');
+    fetch('/pages/offers.php')
+        .then(response => response.json())
+        .then(offers => {
+            contentArea.innerHTML = '';
 
-    // Zabráníme nekonečnému cyklu a definujeme, kolikrát chceme "offer" zopakovat
-    const countToGenerate = 203;
+            offers.forEach(offer => {
+                const offerDiv = `
+                    <div class="offer" id="${offer.id}">
+                        <img src="/misc/1092132_polstarek-kocicka-30x45-cm.jpeg" alt="${escapeHtml(offer.title)}">
+                        <p class="offer_name">${escapeHtml(offer.title)}</p>
+                        <p class="condition">${offer.condition}</p>
+                        <p class="offer_price">${offer.price} Kč</p>
+                        <a href="pages/offer_detail.php?id=${offer.id}">see more</a>
+                    </div>
+                `;
+                contentArea.insertAdjacentHTML('beforeend', offerDiv);
+            });
+        })
+        .catch(err => {
+            console.error("Chyba při načítání:", err);
+            contentArea.innerHTML = "<p>Nepodařilo se načíst inzeráty.</p>";
+        });
+}
 
-    /**
-     * Funkce pro generování nových offer elementů
-     * @param {number} startId - ID, od kterého začneme počítat (pokračujeme po posledním stávajícím)
-     * @param {number} count - Kolik elementů vygenerovat
-     */
-    function generateOffers(startId, count) {
-        if (!originalOffer || !contentContainer) {
-            console.error("Chyba: Nepodařilo se najít originální offer element nebo kontejner.");
-            return;
-        }
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
-        // Vytvoříme fragment pro efektivní přidávání (vložíme všechny prvky najednou)
-        const fragment = document.createDocumentFragment();
-
-        for (let i = 0; i < count; i++) {
-            // Použijeme .cloneNode(true) pro vytvoření hluboké kopie (včetně všech vnitřních elementů)
-            const newOffer = originalOffer.cloneNode(true);
-
-            // Nastavíme nové, unikátní ID. (Používáme startId + i)
-            newOffer.id = (startId + i).toString();
-
-            // Volitelně změníme text pro ověření, že jde o novou kopii
-            const nameParagraph = newOffer.querySelector('.offer_name');
-            if (nameParagraph) {
-                nameParagraph.textContent = `Kocicka ${newOffer.id}`;
-            }
-
-            fragment.appendChild(newOffer);
-        }
-
-        // Vložíme všechny nové elementy do DOM najednou
-        contentContainer.appendChild(fragment);
-    }
-
-    // Spočítáme stávající počet offer elementů, abychom mohli navázat v ID (momentálně je jich 9, s ID 0-8)
-    const existingOffersCount = contentContainer.querySelectorAll('.offer').length;
-
-    // Zavoláme funkci pro generování elementů
-    generateOffers(existingOffersCount, countToGenerate);
+document.addEventListener('DOMContentLoaded', loadOffers);
 </script>
-
 </html>
