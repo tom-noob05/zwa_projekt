@@ -103,7 +103,7 @@
                         </div>
                         <div class="actions">
                             <a href="offer_detail.php?id=<?php echo $offer['id']; ?>" class="btn-view">Zobrazit</a>
-                            <a href="edit_offer.php?id=<?php echo $offer['id']; ?>" class="btn-edit">Upravit</a>
+                            <a href="offer_update.php?id=<?php echo $offer['id']; ?>" class="btn-edit">Upravit</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
