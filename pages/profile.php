@@ -10,6 +10,11 @@
         $stmt->execute([$_SESSION['user_id']]);
         $user = $stmt->fetch();
     }
+if (!empty($_SESSION['user_id']) && isset($pdo)) {
+    $stmt = $pdo->prepare("SELECT * FROM `offers` WHERE `seller_id` = ?;");
+    $stmt->execute([$_SESSION['user_id']]);
+    $offers = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+}
 ?>
 
 <!DOCTYPE html>
@@ -60,14 +65,28 @@
             </section>
 
             <section class="offer-section">
-                <div class="section-header">
-                    <i class="fa-solid fa-tags"></i>
-                    <h2>Vaše inzeráty</h2>
+    <div class="section-header">
+        <h2>Vaše inzeráty</h2>
+    </div>
+    <div class="offers-list">
+        <?php if (!empty($offers)): ?>
+            <?php foreach ($offers as $offer): ?>
+                <div class="profile-offer-item">
+                    <div class="info">
+                        <span class="offer-title"><?php echo htmlspecialchars($offer['title']); ?></span>
+                        <span class="offer-price"><?php echo htmlspecialchars($offer['price']); ?> Kč</span>
+                    </div>
+                    <div class="actions">
+                        <a href="offer_detail.php?id=<?php echo $offer['id']; ?>" class="btn-view">Zobrazit</a>
+                        <a href="edit_offer.php?id=<?php echo $offer['id']; ?>" class="btn-edit">Upravit</a>
+                    </div>
                 </div>
-                <div class="offers-list">
-                    <p class="empty-msg">Zatím nic neprodáváte.</p>
-                </div>
-            </section>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="empty-msg">Zatím nic neprodáváte.</p>
+        <?php endif; ?>
+    </div>
+</section>
         </div>
     </main>
 </body>
