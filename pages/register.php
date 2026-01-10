@@ -54,8 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 </head>
 <body>
     <?php include '../includes/navbar.php';?>
-
-    <form method="POST" action="" onsubmit="return validatePassword()">
+<div class="wrapper">
+    <div class="card">
+    <h2>Registrace</h2>
+    <form method="POST" action="" onsubmit="return validatePassword()">     <!-- predelat na eventListener -->
         <label for="jmeno">Jmeno: </label>
         <input type="text" name="jmeno" required><br>
         <label for="prijmeni">Prijmeni: </label>
@@ -82,7 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             echo '<script>window.location.href = ' . json_encode($redirectUrl) . ';</script>';
         }
     ?>
-
+</div>
+</div>
     <script src='/public/js/register.js'></script>
 
 </body>
