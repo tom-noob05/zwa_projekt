@@ -5,16 +5,27 @@
         exit;
     }
     
-    if (!empty($_SESSION['user_id']) && isset($pdo)) {
+    $userId = $_SESSION['user_id'];
+
+    if (isset($pdo)) {
         $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `id` = ? LIMIT 1;");
-        $stmt->execute([$_SESSION['user_id']]);
+        $stmt->execute([$userId]);
         $user = $stmt->fetch();
+
+        $stmt = $pdo->prepare("SELECT * FROM `offers` WHERE `seller_id` = ?;");
+        $stmt->execute([$userId]);
+        $offers = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+
+        $stmt_bought = $pdo->prepare("
+            SELECT o.*, bo.bought_at 
+            FROM bought_offers bo
+            JOIN offers o ON bo.offer_id = o.id
+            WHERE bo.user_id = ?
+            ORDER BY bo.bought_at DESC
+        ");
+        $stmt_bought->execute([$userId]);
+        $bought_offers = $stmt_bought->fetchAll(PDO::FETCH_ASSOC);
     }
-if (!empty($_SESSION['user_id']) && isset($pdo)) {
-    $stmt = $pdo->prepare("SELECT * FROM `offers` WHERE `seller_id` = ?;");
-    $stmt->execute([$_SESSION['user_id']]);
-    $offers = $stmt->fetchAll(PDO::FETCH_ASSOC); 
-}
 ?>
 
 <!DOCTYPE html>
@@ -53,41 +64,55 @@ if (!empty($_SESSION['user_id']) && isset($pdo)) {
             <button class="edit-profile-btn">Upravit profil</button>
         </section>
 
-        <div class="offers-grid">
-            <section class="offer-section">
-                <div class="section-header">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <h2>Koupené nabídky</h2>
-                </div>
-                <div class="offers-list">
-                    <p class="empty-msg">Zatím jste nic nekoupili.</p>
-                </div>
-            </section>
-
-            <section class="offer-section">
-    <div class="section-header">
-        <h2>Vaše inzeráty</h2>
-    </div>
-    <div class="offers-list">
-        <?php if (!empty($offers)): ?>
-            <?php foreach ($offers as $offer): ?>
-                <div class="profile-offer-item">
-                    <div class="info">
-                        <span class="offer-title"><?php echo htmlspecialchars($offer['title']); ?></span>
-                        <span class="offer-price"><?php echo htmlspecialchars($offer['price']); ?> Kč</span>
-                    </div>
-                    <div class="actions">
-                        <a href="offer_detail.php?id=<?php echo $offer['id']; ?>" class="btn-view">Zobrazit</a>
-                        <a href="edit_offer.php?id=<?php echo $offer['id']; ?>" class="btn-edit">Upravit</a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p class="empty-msg">Zatím nic neprodáváte.</p>
-        <?php endif; ?>
-    </div>
-</section>
+<div class="offers-grid">
+    <section class="offer-section">
+        <div class="section-header">
+            <h2>Koupené nabídky</h2>
         </div>
+        <div class="offers-list">
+            <?php if (!empty($bought_offers)): ?>
+                <?php foreach ($bought_offers as $item): ?>
+                    <div class="profile-offer-item">
+                        <div class="info">
+                            <span class="offer-title"><?php echo htmlspecialchars($item['title']); ?></span>
+                            <span class="offer-price"><?php echo htmlspecialchars($item['price']); ?> Kč</span>
+                            <span class="offer-date">Koupeno: <?php echo date('d.m.Y', strtotime($item['bought_at'])); ?></span>
+                        </div>
+                        <div class="actions">
+                            <a href="offer_detail.php?id=<?php echo $item['id']; ?>" class="btn-view">Zobrazit</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="empty-msg">Zatím jste nic nekoupili.</p>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <section class="offer-section">
+        <div class="section-header">
+            <h2>Vaše inzeráty</h2>
+        </div>
+        <div class="offers-list">
+            <?php if (!empty($offers)): ?>
+                <?php foreach ($offers as $offer): ?>
+                    <div class="profile-offer-item">
+                        <div class="info">
+                            <span class="offer-title"><?php echo htmlspecialchars($offer['title']); ?></span>
+                            <span class="offer-price"><?php echo htmlspecialchars($offer['price']); ?> Kč</span>
+                        </div>
+                        <div class="actions">
+                            <a href="offer_detail.php?id=<?php echo $offer['id']; ?>" class="btn-view">Zobrazit</a>
+                            <a href="edit_offer.php?id=<?php echo $offer['id']; ?>" class="btn-edit">Upravit</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p class="empty-msg">Zatím nic neprodáváte.</p>
+            <?php endif; ?>
+        </div>
+    </section>
+</div>
     </main>
 </body>
 </html>

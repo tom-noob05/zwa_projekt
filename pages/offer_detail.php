@@ -25,6 +25,8 @@
         </div>
 
         <p class="location">Lokace: <span id="offer-location">Nezadána</span></p>
+
+        <button>BUY</button>
     </div>
 
     <script>
