@@ -171,3 +171,45 @@ body {
     margin: 0;
     padding: 0;
 }
+
+/* Zarovnání akcí do jedné řady */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Mezera mezi tlačítky */
+}
+
+/* Úprava formuláře, aby nezalamoval řádek */
+.actions form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.btn-delete {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #a33226;
+}
+
+.actions .btn-view,
+.actions .btn-edit,
+.actions .btn-delete {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin: 0;
+}
