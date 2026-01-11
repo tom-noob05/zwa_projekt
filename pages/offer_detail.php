@@ -73,9 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
 
         <button id="buy-btn">BUY</button>
 
-        <div id="sold-info" hidden>
-            <h2 style="color: white; background: red; padding: 10px; text-align: center;">TENTO PŘEDMĚT JIŽ BYL PRODÁN</h2>
-        </div>
     </div>
 
     <script>
@@ -101,9 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
 
                 document.title = (offer.title || "Detail") + " | Detail inzerátu";
 
-                if (offer.status && offer.status !== 'active') {
+                if (offer.status == "") {
                     document.getElementById('buy-btn').hidden = true;
-                    document.getElementById('sold-info').hidden = false;
                 }
             })
             .catch(err => {
