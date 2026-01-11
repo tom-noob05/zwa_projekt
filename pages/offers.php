@@ -4,7 +4,6 @@ require_once '../config/init.php';
 header('Content-Type: application/json; charset=utf-8');
 
 try {
-
     $id = isset($_GET['id']) ? $_GET['id'] : null;
 
     if ($id) {
@@ -24,16 +23,33 @@ try {
             echo json_encode(['error' => 'Inzerát nenalezen']);
             exit;
         }
+        echo json_encode($data);
+
     } else {
+        $limit = 20;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+        $offset = ($page - 1) * $limit;
+
+        $countSql = "SELECT COUNT(*) FROM offers WHERE `status` = 'active'";
+        $totalItems = $pdo->query($countSql)->fetchColumn();
+        $totalPages = ceil($totalItems / $limit);
+
         $sql = "SELECT `id`, `title`, `price`, `condition`, `img_path`
-        FROM offers 
-        WHERE `status` = 'active';";
+                FROM offers 
+                WHERE `status` = 'active'
+                ORDER BY created_at DESC
+                LIMIT $limit OFFSET $offset;";
         
         $stmt = $pdo->query($sql);
-        $data = $stmt->fetchAll();
-    }
+        $offers = $stmt->fetchAll();
 
-    echo json_encode($data);
+        echo json_encode([
+            'offers' => $offers,
+            'currentPage' => $page,
+            'totalPages' => $totalPages
+        ]);
+    }
 
 } catch(\PDOException $e) {
     http_response_code(500);

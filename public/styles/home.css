@@ -9,10 +9,6 @@ html {
     box-sizing: border-box;
 }
 
-.navbar{
-    margin:0px;
-}
-
 body {
     margin: 0;
     background-color: #353535;
@@ -22,58 +18,68 @@ body {
 }
 
 .content {
+    gap: 10px;
     margin-left: 5%;
     padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 5px;
     width: 90%;
-    height: 100%;
     background-color: #284B63;
     color: #D9D9D9;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+}
+
+#main-offers-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    width: 90%;
 }
 
 .offer {
+    width: 100%;
     max-width: 200px;
-    max-height: 250px;
     background-color: #D9D9D9;
     color: black;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
     padding: 10px;
+    margin: 0;
 }
 
-.category {
-    margin-left: 10%;
-    color: #D9D9D9;
-    font-size: 20px;
-}
-
-a {
-    color: #284B63;
-}
-
-img {
-    max-width: 100%;
-}
-
-.offer_name {
-    font-size: 20px;
-}
-
-.footer {
-    display: flex;
+#pagination-controls {
     width: 100%;
-    box-sizing: border-box;
-    border: 5px solid red;
-    padding: 5px;
-    font-size: 15px;
-    background-color: #3A6B74;
+    display: flex;
+    justify-content: center;
+    padding: 30px 0 10px 0;
 }
 
+.pagination-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-#tmp {
-    font-size: 80px;
+.pagination-wrapper button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.pagination-wrapper button:hover:not(:disabled) {
+    background-color: #555;
+}
+
+.pagination-wrapper button:disabled {
+    background-color: #777;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.page-info {
+    font-weight: bold;
+    color: #D9D9D9;
 }

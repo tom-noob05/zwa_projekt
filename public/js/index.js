@@ -1,13 +1,19 @@
-function loadOffers() {
-    const contentArea = document.getElementById('main-offers-container');
+let currentPage = 1;
+let totalPages = 1;
 
-    fetch('/pages/offers.php')
+function loadOffers(page = 1) {
+    const contentArea = document.getElementById('main-offers-container');
+    currentPage = page;
+
+    fetch(`/pages/offers.php?page=${page}`)
         .then(response => response.json())
-        .then(offers => {
+        .then(data => {
+            const offers = data.offers;
+            totalPages = data.totalPages;
+
             contentArea.innerHTML = '';
 
             offers.forEach(offer => {
-                console.log(offer.img_path)
                 const imageSource = offer.img_path ? offer.img_path : "/misc/1092132_polstarek-kocicka-30x45-cm.jpeg";
                 const offerDiv = `
                     <div class="offer" id="${offer.id}">
@@ -20,11 +26,42 @@ function loadOffers() {
                 `;
                 contentArea.insertAdjacentHTML('beforeend', offerDiv);
             });
+
+            renderPagination();
         })
         .catch(err => {
             console.error("Chyba při načítání:", err);
-            contentArea.innerHTML = "<p>Nepodařilo se načíst inzeráty.</p>";
+            if (contentArea) contentArea.innerHTML = "<p>Nepodařilo se načíst inzeráty.</p>";
         });
+}
+
+function renderPagination() {
+    const contentBox = document.querySelector('.content');
+    let paginationContainer = document.getElementById('pagination-controls');
+
+    if (!paginationContainer) {
+        paginationContainer = document.createElement('div');
+        paginationContainer.id = 'pagination-controls';
+        contentBox.appendChild(paginationContainer);
+    }
+
+    paginationContainer.innerHTML = `
+        <div class="pagination-wrapper">
+            <button ${currentPage === 1 ? 'disabled' : ''} id="prevPage">← Předchozí</button>
+            <span class="page-info">Strana ${currentPage} z ${totalPages}</span>
+            <button ${currentPage === totalPages ? 'disabled' : ''} id="nextPage">Další →</button>
+        </div>
+    `;
+
+    document.getElementById('prevPage').onclick = () => {
+        if (currentPage > 1) loadOffers(currentPage - 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    document.getElementById('nextPage').onclick = () => {
+        if (currentPage < totalPages) loadOffers(currentPage + 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 }
 
 function escapeHtml(text) {
@@ -33,4 +70,4 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-document.addEventListener('DOMContentLoaded', loadOffers);
+document.addEventListener('DOMContentLoaded', () => loadOffers(1));
