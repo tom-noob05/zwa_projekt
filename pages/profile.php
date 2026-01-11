@@ -61,7 +61,7 @@
                 </div>
             </div>
             
-            <button class="edit-profile-btn">Upravit profil</button>
+            <a href="profile_edit.php?id=<?php echo $user['id']; ?>" class="edit-profile-btn">Upravit profil</a>
         </section>
 
 <div class="offers-grid">
