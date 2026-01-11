@@ -1,10 +1,16 @@
 <?php 
 require_once '../config/init.php';
 
+if (empty($_SESSION['user_id'])) {
+    header("Location: /pages/login.php");
+    exit;
+}
 
 $offer = null;
 $offerId = $_GET['id'] ?? null;
+$userId = $_SESSION['user_id'];
 $success = null;
+$error = null;
 
 try {
     $stmt_cat = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
@@ -13,115 +19,112 @@ try {
     die("Chyba při načítání kategorií: " . $e->getMessage());
 }
 
-if (!empty($offerId)){
-    try{
-        $stmt = $pdo->prepare("SELECT * FROM offers WHERE id = ?;");
-        $stmt->execute([$offerId]);
+if (!empty($offerId)) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM offers WHERE id = ? AND seller_id = ?;");
+        $stmt->execute([$offerId, $userId]);
         $offer = $stmt->fetch();
-    } catch(\PDOException $e){
-        print_r($e->getMessage());
+
+        if (!$offer) {
+            $error = "Inzerát nebyl nalezen nebo nemáte oprávnění k jeho úpravě.";
+        }
+    } catch (\PDOException $e) {
+        $error = "Chyba databáze: " . $e->getMessage();
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST")
-{
-    try{
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
+    try {
         $title = $_POST['title'] ?? '';
         $price = $_POST['price'] ?? 0;
         $category_id = $_POST['category_id'] ?? null;
         $condition = $_POST['condition'] ?? '';
         $description = $_POST['description'] ?? '';
-        
-        $seller_id = $_SESSION['user_id'];
-        // $status = 'active';
 
-        $stmt = $pdo->prepare("UPDATE offers SET title = ?, `description` = ?, `price` = ?, `category_id` = ?, `condition` = ? WHERE `id` = ?;");
-        $stmt->execute([$title, $description, $price, $category_id, $condition, $offerId]);
-        $success = TRUE;
-    } catch(\PDOException $e) {
-        print_r(json_encode(['error' => $e->getMessage()]));
+        $stmt = $pdo->prepare("UPDATE offers SET title = ?, `description` = ?, `price` = ?, `category_id` = ?, `condition` = ? WHERE `id` = ? AND `seller_id` = ?;");
+        $stmt->execute([$title, $description, $price, $category_id, $condition, $offerId, $userId]);
+        
+        $success = true;
+    } catch (\PDOException $e) {
+        $error = "Nepodařilo se uložit změny: " . $e->getMessage();
     }
 
     if ($success) {
         header('Location: /pages/profile.php');
+        exit;
     }
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Úprava nabídky</title>
+    <title>Úprava nabídky | <?= htmlspecialchars($offer['title'] ?? 'Chyba') ?></title>
     <link rel="stylesheet" type="text/css" href="/public/styles/offer_update.css">
 </head>
 <body>
-<?php include '../includes/navbar.php';?>
+<?php include '../includes/navbar.php'; ?>
 
-<?php if ($offer): ?>
-    <div class="container">
-        <div class="form-box">
+<div class="container">
+    <div class="form-box">
+        <?php if ($error): ?>
+            <div style="background: #ff6b6b; padding: 15px; border-radius: 5px; margin-bottom: 20px; color: white; text-align: center;">
+                <?= $error ?>
+            </div>
+            <center><a href="/pages/profile.php" style="color: antiquewhite;">Zpět na profil</a></center>
+        <?php endif; ?>
+
+        <?php if ($offer): ?>
             <center><h2>Úprava nabídky</h2></center>
             <form method="POST" action="">
-                <input type="hidden" name="id" value="<?php echo htmlspecialchars($offer['id']); ?>">
+                <input type="hidden" name="id" value="<?= htmlspecialchars($offer['id']); ?>">
 
                 <div class="form-group">
                     <label for="title">Název:</label>
-                    <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($offer['title']); ?>">
+                    <input type="text" id="title" name="title" value="<?= htmlspecialchars($offer['title']); ?>" required>
                 </div>
 
                 <div class="form-group">
                     <label for="description">Popis:</label>
-                    <textarea id="description" name="description"><?php echo htmlspecialchars($offer['description']); ?></textarea>
+                    <textarea id="description" name="description" required><?= htmlspecialchars($offer['description']); ?></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="price">Cena:</label>
-                    <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($offer['price']); ?>">
+                    <label for="price">Cena (Kč):</label>
+                    <input type="number" id="price" name="price" value="<?= htmlspecialchars($offer['price']); ?>" required>
                 </div>
 
                 <div class="form-group">
                     <label for="category">Kategorie:</label>
                     <select id="category" name="category_id" required>
-                        <option value="" disabled selected>Vyberte kategorii</option>
-
-                            <?php if (!empty($categories)): ?>
-                                <?php foreach ($categories as $cat): ?>
-                                    <option value="<?= htmlspecialchars($cat['id']) ?>">
-                                        <?= htmlspecialchars($cat['name']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <option value="" disabled>Žádné kategorie nenalezeny</option>
-                            <?php endif; ?>
-
+                        <option value="" disabled>Vyberte kategorii</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?= $cat['id'] ?>" <?= ($offer['category_id'] == $cat['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($cat['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="condition">Kondice:</label>
                     <select id="condition" name="condition" required>
-                        <option value="" disabled selected>Vyberte stav</option>
-                        <option value="new">Nové</option>
-                        <option value="used">Použité</option>
-                        <option value="damaged">Poškozené</option>
+                        <option value="" disabled>Vyberte stav</option>
+                        <option value="new" <?= ($offer['condition'] == 'new') ? 'selected' : '' ?>>Nové</option>
+                        <option value="used" <?= ($offer['condition'] == 'used') ? 'selected' : '' ?>>Použité</option>
+                        <option value="damaged" <?= ($offer['condition'] == 'damaged') ? 'selected' : '' ?>>Poškozené</option>
                     </select>
                 </div>
 
-                <br>
-
                 <div class="form-footer">
-                    <button type="submit" class="btn-submit">Uložit</button>
+                    <button type="submit" class="btn-submit">Uložit změny</button>
+                    <a href="/pages/profile.php">Zrušit a vrátit se</a>
                 </div>
-
             </form>
-
-        </div>
+        <?php endif; ?>
     </div>
-<?php else: ?>
-    <p>Nabídka nebyla nalezena.</p>
-<?php endif; ?>
+</div>
 
 </body>
 </html>

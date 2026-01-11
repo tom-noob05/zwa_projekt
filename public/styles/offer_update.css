@@ -55,8 +55,11 @@ select {
 
 .form-footer {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     margin-top: 25px;
+    gap: 15px;
 }
 
 .btn-submit {
@@ -72,4 +75,9 @@ select {
 
 .btn-submit:hover {
     background-color: #3b6e73;
+}
+
+a {
+    color: #D9D9D9;
+    text-decoration: none;
 }
