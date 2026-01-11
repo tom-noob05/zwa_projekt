@@ -21,3 +21,24 @@ img {
     margin: 0;
     font-size: 50px;
 }
+
+.hidden {
+    display: none !important;
+}
+
+.sold-info {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.sold-badge {
+    background-color: #c0392b;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
