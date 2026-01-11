@@ -1,7 +1,7 @@
 # Dokumentace projektu ZWA
 
 ## Úvod
-Tato dokumentace popisuje projekt ZWA, který je webovou aplikací pro správu nabídek a uživatelů.
+Tato dokumentace popisuje projekt ZWA - webovou aplikaci pro správu inzerátů.
 
 ## Struktura projektu
 Projekt má následující strukturu:
@@ -74,21 +74,7 @@ public/
 - **test_db.php**: Skript pro testování databáze.
 - **config/**: Konfigurační soubory aplikace.
 - **documentation/**: Dokumentace a poznámky.
-- **includes/**: Zahrnuje soubory pro hlavičku, patičku a funkce.
+- **includes/**: Zahrnuje soubory pro hlavičku a funkce.
 - **misc/**: Různé soubory, včetně skriptů pro databázi a diagramů.
 - **pages/**: Různé stránky aplikace.
 - **public/**: Veřejné soubory, včetně JavaScriptu a stylů.
-
-## Instalace
-1. Klonujte repozitář: `git clone https://github.com/tom-noob05/zwa_projekt.git`
-2. Nainstalujte potřebné závislosti.
-3. Nakonfigurujte databázi podle souboru `db_create_script.sql`.
-
-## Použití
-Popis, jak používat aplikaci a jaké funkce nabízí.
-
-## Přispívání
-Pokyny pro přispívání do projektu.
-
-## Licencování
-Informace o licenci projektu.
