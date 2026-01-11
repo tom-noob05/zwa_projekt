@@ -73,10 +73,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
         <form method = "post" action="">
 
-            <input type="text" placeholder="Username:" name="username" value="<?php echo $usernameValue; ?>" 
-            required <?php echo empty($usernameValue) ? 'autofocus' : ''; ?> >
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username" value="<?php echo $usernameValue; ?>" required <?php echo empty($usernameValue) ? 'autofocus' : ''; ?> >
+            </div>
 
-            <input type="password" placeholder="Password:" name="password" required <?php echo !empty($usernameValue) ? 'autofocus' : ''; ?> >
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" required <?php echo !empty($usernameValue) ? 'autofocus' : ''; ?> >
+            </div>
+
             <button type="submit">Login</button>
 
         </form>
