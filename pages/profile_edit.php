@@ -98,7 +98,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="container">
     <div class="form-box">
-        <center><h2>Upravit profil</h2></center>
         
         <?php if ($error): ?>
             <p style="color: #ff6b6b; text-align: center;"><?php echo $error; ?></p>
@@ -106,7 +105,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <div class="wrapper">
             <div class="card">
-                <form method="POST" action="">
+                <h2>Upravit profil</h2>
+                <form method="POST" action="#">
                     <input type="hidden" name="id" value="<?php echo htmlspecialchars($targetUser['id']); ?>">
 
                     <div class="form-group">
@@ -120,8 +120,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="form-group">
-                        <label for="username">Uživatelské jméno:</label>
-                        <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($targetUser['username']); ?>" required>
+                        <label for="usernameInput">Uživatelské jméno:</label>
+                        <input type="text" id="usernameInput" name="username" value="<?php echo htmlspecialchars($targetUser['username']); ?>" required>
                     </div>
 
                     <div class="form-group">
@@ -132,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php if ($loggedInUser['role_id'] == 1): ?>
                     <div class="form-group">
                         <label for="role_id">Role (1=Admin, 2=User):</label>
-                        <select id="role_id" name="role_id" required>
+                        <select id="role_id" name="role_id">
                             <option value="1" <?php echo ($targetUser['role_id'] == 1) ? 'selected' : ''; ?>>Admin (1)</option>
                             <option value="2" <?php echo ($targetUser['role_id'] == 2) ? 'selected' : ''; ?>>User (2)</option>
                         </select>

@@ -70,24 +70,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <div class="wrapper">
         <div class="card">
             <h2>Registrace</h2>
-            <form method="POST" action="" onsubmit="return validatePassword()">
+            <form method="POST" action="#" onsubmit="return validatePassword()">
                 <label for="jmeno">Jméno: </label>
-                <input type="text" name="jmeno" value="<?php echo htmlspecialchars($val_jmeno); ?>" required><br>
+                <input type="text" id="jmeno" name="jmeno" value="<?php echo htmlspecialchars($val_jmeno); ?>" required><br>
                 
                 <label for="prijmeni">Příjmení: </label>
-                <input type="text" name="prijmeni" value="<?php echo htmlspecialchars($val_prijmeni); ?>" required><br>
+                <input type="text" id="prijmeni" name="prijmeni" value="<?php echo htmlspecialchars($val_prijmeni); ?>" required><br>
                 
                 <label for="email">Email: </label>
-                <input type="email" name="email" value="<?php echo htmlspecialchars($val_email); ?>" required><br>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($val_email); ?>" required><br>
                 
-                <label for="username">Uživatelské jméno: </label>
-                <input type="text" name="username" value="<?php echo htmlspecialchars($val_username); ?>" required><br>
+                <label for="usernameInput">Uživatelské jméno: </label>
+                <input type="text" id="usernameInput" name="username" value="<?php echo htmlspecialchars($val_username); ?>" required><br>
                 
                 <label for="password">Heslo: </label>
-                <input type="password" name="password" id="password" required><br>
+                <input type="password" id="password" name="password" required><br>
                 
                 <label for="confirmPassword">Potvrzení hesla: </label>
-                <input type="password" name="confirmPassword" id="confirmPassword" required><br>
+                <input type="password" id="confirmPassword" name="confirmPassword" required><br>
                 
                 <input type="submit" value="Registrovat">
             </form>

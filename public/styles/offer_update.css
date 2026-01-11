@@ -24,6 +24,10 @@ h2 {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
+.form-box h2 {
+    text-align: center;
+}
+
 .form-group {
     margin-bottom: 15px;
 }
