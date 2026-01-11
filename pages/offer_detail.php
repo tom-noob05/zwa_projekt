@@ -48,17 +48,17 @@ require_once '../config/init.php';
                 return res.json();
             })
             .then(offer => {
-                console.log("Hurá, data dorazila:", offer);
+    console.log("Hurá, data dorazila:", offer);
 
-                document.getElementById('offer-name').textContent = offer.title;
-                document.getElementById('offer-price').textContent = offer.price;
-                document.getElementById('offer-condition').textContent = offer.condition;
-                document.getElementById('offer-description').textContent = offer.description;
-                
-                document.getElementById('offer-category').textContent = offer.category_id;
+    document.getElementById('offer-name').textContent = offer.title;
+    document.getElementById('offer-price').textContent = offer.price;
+    document.getElementById('offer-condition').textContent = offer.condition;
+    document.getElementById('offer-description').textContent = offer.description;
+    
+    document.getElementById('offer-category').textContent = offer.category_name;
 
-                document.title = offer.title + " | Detail inzerátu";
-            })
+    document.title = offer.title + " | Detail inzerátu";
+})
             .catch(err => {
                 console.error("Chyba:", err);
                 document.querySelector('.content').innerHTML = "<h2>Chyba: Inzerát se nepodařilo načíst.</h2>";

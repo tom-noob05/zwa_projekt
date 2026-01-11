@@ -1,7 +1,6 @@
 <?php 
 require_once '../config/init.php'; 
 
-// Nastavení headeru pro JSON
 header('Content-Type: application/json; charset=utf-8');
 
 try {
@@ -9,9 +8,11 @@ try {
     $id = isset($_GET['id']) ? $_GET['id'] : null;
 
     if ($id) {
-        $sql = "SELECT `id`, `title`, `description`, `price`, `status`, `condition`, seller_id, category_id, created_at 
-                FROM offers 
-                WHERE `status` = 'active' AND `id` = ? 
+        $sql = "SELECT o.`id`, o.`title`, o.`description`, o.`price`, o.`status`, o.`condition`, 
+                       o.seller_id, c.name as category_name, o.created_at 
+                FROM offers o
+                LEFT JOIN categories c ON o.category_id = c.id
+                WHERE o.`status` = 'active' AND o.`id` = ? 
                 LIMIT 1;";
         
         $stmt = $pdo->prepare($sql);
@@ -32,7 +33,6 @@ try {
         $data = $stmt->fetchAll();
     }
 
-    // Odeslání dat
     echo json_encode($data);
 
 } catch(\PDOException $e) {
