@@ -26,5 +26,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-//pridat eventlistenery na logoutbtn a loginbtn, odebrat onclick() z html

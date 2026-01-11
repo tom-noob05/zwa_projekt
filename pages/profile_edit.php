@@ -1,4 +1,10 @@
 <?php 
+/**
+ * Editace uživatelského profilu.
+ * * - Běžný uživatel: Může upravovat pouze své vlastní údaje.
+ * - Admin (role_id=1): Může upravovat libovolného uživatele (přes GET id) a měnit jeho roli.
+ * - Obsahuje logiku pro načtení dat, validaci oprávnění a zpracování formuláře (POST).
+ */
 require_once '../config/init.php';
 
 if (empty($_SESSION['user_id'])) {
