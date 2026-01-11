@@ -1,4 +1,11 @@
 <?php
+/**
+ * Stránka pro správu uživatelů (pouze pro Admina).
+ * - Ověřuje oprávnění (přístup pouze pro role_id = 1).
+ * - Zobrazuje seznam všech uživatelů v tabulce se stránkováním.
+ * - Umožňuje přechod na detailní editaci profilu každého uživatele.
+ */
+
 require_once '../config/init.php';
 
 // kontrola prihlaseni

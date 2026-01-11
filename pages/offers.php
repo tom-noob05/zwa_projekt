@@ -1,4 +1,10 @@
 <?php 
+/**
+ * API endpoint pro načítání inzerátů (vrací JSON).
+ * - S parametrem ?id={int}: Vrátí detail konkrétního inzerátu.
+ * - Bez parametru id: Vrátí seznam aktivních inzerátů se stránkováním.
+ * - Podporuje parametry: ?page={int} a ?category_id={int} pro filtrování.
+ */
 require_once '../config/init.php'; 
 header('Content-Type: application/json; charset=utf-8');
 
