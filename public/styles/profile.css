@@ -215,3 +215,16 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.admin-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 0;
+}
+
+.admin-btn {
+    font-size: 16px;
+    padding: 12px 25px;
+}

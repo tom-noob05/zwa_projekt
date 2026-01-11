@@ -14,15 +14,29 @@ $error = null;
 
 try {
     $stmt_cat = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
-    $categories = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
+    $categories = $stmt_cat->fetchAll();
 } catch (PDOException $e) {
     die("Chyba při načítání kategorií: " . $e->getMessage());
 }
 
+try {
+    $stmt_user = $pdo->prepare("SELECT * FROM users WHERE `id` = ? LIMIT 1;");
+    $stmt_user->execute([$userId]);
+    $user = $stmt_user->fetch();
+} catch (PDOException $e) {
+    die("Chyba při načítání user: " . $e->getMessage());
+}
+
 if (!empty($offerId)) {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM offers WHERE id = ? AND seller_id = ?;");
-        $stmt->execute([$offerId, $userId]);
+        if ($user['role_id'] == 1) {
+            $stmt = $pdo->prepare("SELECT * FROM offers WHERE id = ?;");
+            $stmt->execute([$offerId]);
+        }else {
+            $stmt = $pdo->prepare("SELECT * FROM offers WHERE id = ? AND seller_id = ?;");
+            $stmt->execute([$offerId, $userId]);
+        }
+        
         $offer = $stmt->fetch();
 
         if (!$offer) {
@@ -40,9 +54,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
         $category_id = $_POST['category_id'] ?? null;
         $condition = $_POST['condition'] ?? '';
         $description = $_POST['description'] ?? '';
+        
+        if ($user['role_id'] == 1) {
+            $status = $_POST['status'] ?? 'active';
+        } else {
+            $status = $offer['status'];
+        }
 
-        $stmt = $pdo->prepare("UPDATE offers SET title = ?, `description` = ?, `price` = ?, `category_id` = ?, `condition` = ? WHERE `id` = ? AND `seller_id` = ?;");
-        $stmt->execute([$title, $description, $price, $category_id, $condition, $offerId, $userId]);
+        $stmt = $pdo->prepare("UPDATE offers SET title = ?, `description` = ?, `price` = ?, `category_id` = ?, `condition` = ?, `status` = ? WHERE `id` = ?;");
+        $stmt->execute([$title, $description, $price, $category_id, $condition, $status, $offerId]);
         
         $success = true;
     } catch (\PDOException $e) {
@@ -116,6 +136,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
                         <option value="damaged" <?= ($offer['condition'] == 'damaged') ? 'selected' : '' ?>>Poškozené</option>
                     </select>
                 </div>
+                <?php if ($user['role_id'] == 1): ?>
+                <div class="form-group">
+                    <label for="status">Stav:</label>
+                    <select id="status" name="status" required>
+                        <option value="active" <?= ($offer['status'] == 'active') ? 'selected' : '' ?>>Aktivní</option>
+                        <option value="bought" <?= ($offer['status'] == 'bought') ? 'selected' : '' ?>>Koupené</option>
+                    </select>
+                </div>
+                <?php endif; ?>
 
                 <div class="form-footer">
                     <button type="submit" class="btn-submit">Uložit změny</button>

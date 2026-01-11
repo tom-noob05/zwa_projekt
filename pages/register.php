@@ -34,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     } else {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $insert = $pdo->prepare("INSERT INTO users (`jmeno`, `prijmeni`, `email`, `username`, `password` ) VALUES (?, ?, ?, ?, ?);");
-        $insert->execute([$val_jmeno, $val_prijmeni, $val_email, $val_username, $hashedPassword]);
+        $insert = $pdo->prepare("INSERT INTO users (`jmeno`, `prijmeni`, `email`, `username`, `password`, `role_id` ) VALUES (?, ?, ?, ?, ?, ?);");
+        $insert->execute([$val_jmeno, $val_prijmeni, $val_email, $val_username, $hashedPassword, 2]);   //2 je role_id pro roli 'user'
 
         $alertMessage = "Registered successfully!";
         $redirectUrl = "/pages/login.php";

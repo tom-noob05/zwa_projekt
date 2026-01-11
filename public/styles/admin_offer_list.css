@@ -1,0 +1,145 @@
+body {
+    background-color: #353535;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.back-link {
+    color: #ddd;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+    color: white;
+}
+
+.table-wrapper {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.admin-table th, 
+.admin-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #333;
+}
+
+.admin-table th {
+    background-color: #284B63;
+    color: white;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+}
+
+.admin-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.title-cell {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.actions-col {
+    text-align: right;
+    width: 180px;
+}
+
+.actions-cell {
+    text-align: right;
+    white-space: nowrap;
+}
+
+
+.btn-view,
+.btn-edit {
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 3px;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
+    margin-left: 5px;
+    color: white !important;
+}
+
+.btn-edit { background: #284B63; }
+.btn-view { background: #3A6B74; }
+
+.btn-view:hover,
+.btn-edit:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+.empty-msg {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+    font-style: italic;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.page-link {
+    display: inline-block;
+    padding: 8px 14px;
+    text-decoration: none;
+    color: #284B63;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+    border-color: #aaa;
+}
+
+
+.page-link.active {
+    background-color: #284B63;
+    color: white;
+    border-color: #284B63;
+}
