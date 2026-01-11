@@ -4,7 +4,7 @@ const id = urlParams.get('id');
 if (id) {
     fetch('offers.php?id=' + id)
         .then(res => {
-            if (!res.ok) throw new Error("Inzerát nebyl nalezen v databázi.");
+            if (!res.ok) throw new Error("Inzerát nebyl nalezen.");
             return res.json();
         })
         .then(offer => {
@@ -16,17 +16,20 @@ if (id) {
 
             if (offer.img_path) {
                 document.getElementById('offer-img').src = ".." + offer.img_path;
+            } else {
+                document.getElementById('offer-img').src = "/misc/1092132_polstarek-kocicka-30x45-cm.jpeg";
+            }
+
+            if (offer.status == "") {
+                document.getElementById('buy-btn').classList.add('hidden');
+                document.getElementById('sold-info').classList.remove('hidden');
             }
 
             document.title = (offer.title || "Detail") + " | Detail inzerátu";
-
-            if (offer.status == "") {
-                document.getElementById('buy-btn').hidden = true;
-            }
         })
         .catch(err => {
             console.error("Chyba při načítání:", err);
-            document.querySelector('.content').innerHTML = "<h2>Chyba: Inzerát se nepodařilo načíst. Zkontrolujte konzoli.</h2>";
+            document.querySelector('.content').innerHTML = "<h2>Inzerát se nepodařilo načíst.</h2>";
         });
 }
 
@@ -48,7 +51,11 @@ document.getElementById('buy-btn').addEventListener('click', function () {
                 window.location.href = 'profile.php';
             } else {
                 alert('Chyba: ' + data.message);
-                location.reload();
+                if (data.message.includes("přihlásit")) {
+                    window.location.href = 'login.php';
+                } else {
+                    location.reload();
+                }
             }
         })
         .catch(err => {
@@ -56,3 +63,9 @@ document.getElementById('buy-btn').addEventListener('click', function () {
             alert('Nastala chyba při komunikaci se serverem.');
         });
 });
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}

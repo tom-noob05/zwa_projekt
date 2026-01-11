@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * Application bootstrap and initialization.
+ *
+ * Starts session, loads configuration and helper functions and
+ * establishes a PDO database connection available as $pdo.
+ * On database connection error the script will terminate with
+ * an explanatory message.
+ *
+ * @package ZWA
+ */
 
 if (session_status() == PHP_SESSION_NONE)
 {

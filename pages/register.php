@@ -1,4 +1,16 @@
 <?php
+/**
+ * User registration page and handler.
+ *
+ * Expected POST params:
+ *  - jmeno, prijmeni, email, username, password
+ *
+ * Validates uniqueness of username/email and inserts a new record
+ * in the `users` table with a hashed password and default role_id = 2.
+ * On success, the user is redirected to the login page.
+ *
+ * @package ZWA
+ */
 require_once '../config/init.php';
 
 redirectIfLoggedIn();

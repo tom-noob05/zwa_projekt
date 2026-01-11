@@ -71,7 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         </div>
         <hr>
 
-        <button id="buy-btn">BUY</button>
+        <div class="action-container">
+    <button id="buy-btn">BUY</button>
+    
+    <div id="sold-info" class="sold-info hidden">
+        <span class="sold-badge">Již prodáno</span>
+    </div>
+</div>
 
     </div>
 
