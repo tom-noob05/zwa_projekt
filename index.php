@@ -29,7 +29,6 @@ require_once 'config/init.php';?>
         </div>
     </div>
 
+    <script src="/public/js/index.js"></script>
 </body>
-
-<script src = "/public/js/index.js"></script>
 </html>

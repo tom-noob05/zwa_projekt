@@ -69,9 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
         <h2>Přihlášení</h2>
 
-        <div class = "error-div"> <?php echo $errorMsg ? $errorMsg : '&nbsp'; ?> </div>
+        <div class = "error-div"> <?php echo $errorMsg ? $errorMsg : '&nbsp;'; ?> </div>
 
-        <form method = "post" action="">
+        <form method = "post" action="#">
 
             <div class="form-group">
                 <label for="username">Uživatelské jméno</label>

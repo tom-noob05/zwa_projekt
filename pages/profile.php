@@ -126,7 +126,7 @@ if (isset($pdo)) {
                                     <a href="offer_detail.php?id=<?php echo $offer['id']; ?>" class="btn-view">Zobrazit</a>
                                     <a href="offer_update.php?id=<?php echo $offer['id']; ?>" class="btn-edit">Upravit</a>
             
-                                    <form method="POST" action="" onsubmit="return confirm('Opravdu chcete tento inzerát smazat?');">
+                                    <form method="POST" action="#" onsubmit="return confirm('Opravdu chcete tento inzerát smazat?');">
                                         <input type="hidden" name="delete_offer_id" value="<?php echo $offer['id']; ?>">
                                         <button type="submit" class="btn-delete">Smazat</button>
                                     </form>

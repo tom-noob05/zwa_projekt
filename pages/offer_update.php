@@ -102,12 +102,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
             <div style="background: #ff6b6b; padding: 15px; border-radius: 5px; margin-bottom: 20px; color: white; text-align: center;">
                 <?= $error ?>
             </div>
-            <center><a href="/pages/profile.php" style="color: antiquewhite;">Zpět na profil</a></center>
+            <a href="/pages/profile.php" style="color: antiquewhite;">Zpět na profil</a>
         <?php endif; ?>
 
         <?php if ($offer): ?>
-            <center><h2>Úprava nabídky</h2></center>
-            <form method="POST" action="">
+            <h2>Úprava nabídky</h2>
+            <form method="POST" action="#">
                 <input type="hidden" name="id" value="<?= htmlspecialchars($offer['id']); ?>">
 
                 <div class="form-group">
@@ -149,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
                 <?php if ($user['role_id'] == 1): ?>
                 <div class="form-group">
                     <label for="status">Stav:</label>
-                    <select id="status" name="status" required>
+                    <select id="status" name="status">
                         <option value="active" <?= ($offer['status'] == 'active') ? 'selected' : '' ?>>Aktivní</option>
                         <option value="bought" <?= ($offer['status'] == 'bought') ? 'selected' : '' ?>>Koupené</option>
                     </select>
