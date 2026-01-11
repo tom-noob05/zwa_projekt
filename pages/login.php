@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Přihlášení</title>
     <link rel="stylesheet" href="../public/styles/login.css">
     <link rel = "stylesheet" href = "/public/styles/navbar.css">
 </head>
@@ -67,21 +67,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 <div class = "wrapper">
     <div class="card">
 
-        <h2>Login</h2>
+        <h2>Přihlášení</h2>
 
         <div class = "error-div"> <?php echo $errorMsg ? $errorMsg : '&nbsp'; ?> </div>
 
         <form method = "post" action="">
 
-            <input type="text" placeholder="Username:" name="username" value="<?php echo $usernameValue; ?>" 
-            required <?php echo empty($usernameValue) ? 'autofocus' : ''; ?> >
+            <div class="form-group">
+                <label for="username">Uživatelské jméno</label>
+                <input type="text" id="username" name="username" placeholder="Uživatelské jméno" value="<?php echo $usernameValue; ?>" required <?php echo empty($usernameValue) ? 'autofocus' : ''; ?> >
+            </div>
 
-            <input type="password" placeholder="Password:" name="password" required <?php echo !empty($usernameValue) ? 'autofocus' : ''; ?> >
-            <button type="submit">Login</button>
+            <div class="form-group">
+                <label for="password">Heslo</label>
+                <input type="password" id="password" name="password" placeholder="Heslo" required <?php echo !empty($usernameValue) ? 'autofocus' : ''; ?> >
+            </div>
+
+            <button type="submit">Přihlásit se</button>
 
         </form>
         <hr>
-        <a href="/pages/register.php">Don't have an account? Register a new one.</a>
+        <a href="/pages/register.php">Nemáte účet? Zaregistrujte se.</a>
         
     </div>
 </div>

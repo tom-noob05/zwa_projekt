@@ -1,14 +1,16 @@
-function confirmLogout(){
-    logout = confirm('Do you want to Log Out?');
-    if (logout){
-        window.location.href='/pages/logout.php';
+/*
+ * navbar.js — obslužné funkce pro navigaci (logout/login tlačítka)
+ */function confirmLogout() {
+    logout = confirm('Opravdu se chcete odhlásit?');
+    if (logout) {
+        window.location.href = '/pages/logout.php';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutbtn');
 
-    if(logoutBtn){
+    if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             confirmLogout();
@@ -16,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const loginBtn = document.getElementById('loginbtn');
-    
-    if(loginBtn){
+
+    if (loginBtn) {
         loginBtn.addEventListener('click', (e) => {
             e.preventDefault();
             window.location.href = "/pages/login.php";

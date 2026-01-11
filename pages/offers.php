@@ -2,6 +2,27 @@
 require_once '../config/init.php'; 
 header('Content-Type: application/json; charset=utf-8');
 
+function sanitize_img_path($path) {
+    if (empty($path)) return null;
+    // disallow directory traversal
+    if (strpos($path, '..') !== false) return null;
+    $lower = strtolower($path);
+    if (strpos($lower, 'javascript:') !== false) return null;
+
+    // Allow absolute app-local paths that start with known folders
+    $allowedPrefixes = ['/public/uploads/', '/misc/'];
+    if (strpos($path, '/') === 0) {
+        foreach ($allowedPrefixes as $p) {
+            if (strpos($path, $p) === 0) return $path;
+        }
+        // allow external http(s) urls
+        if (strpos($lower, 'http://') === 0 || strpos($lower, 'https://') === 0) return $path;
+        return null;
+    }
+
+    return null;
+}
+
 try {
     $id = isset($_GET['id']) ? $_GET['id'] : null;
     $categoryId = isset($_GET['category_id']) && $_GET['category_id'] !== '' ? (int)$_GET['category_id'] : null;
@@ -15,7 +36,12 @@ try {
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$id]);
         $data = $stmt->fetch();
-        echo json_encode($data ?: ['error' => 'Inzerát nenalezen']);
+        if ($data) {
+            $data['img_path'] = sanitize_img_path($data['img_path']);
+            echo json_encode($data);
+        } else {
+            echo json_encode(['error' => 'Inzerát nenalezen']);
+        }
     } else {
         $limit = 20;
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -39,6 +65,11 @@ try {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
         $offers = $stmt->fetchAll();
+
+        // sanitize image paths
+        foreach ($offers as &$off) {
+            $off['img_path'] = sanitize_img_path($off['img_path']);
+        }
 
         echo json_encode([
             'offers' => $offers,

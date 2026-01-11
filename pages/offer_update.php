@@ -1,4 +1,14 @@
 <?php 
+/**
+ * Úprava inzerátu (offer_update.php)
+ *
+ * Zajišťuje autorizaci: pouze vlastníci inzerátu nebo admin mohou upravovat.
+ * Obsluha POST provádí UPDATE hodnot s použitím prepared statements.
+ *
+ * Očekává POST: title, description, price, category_id, condition, status (admin only)
+ *
+ * @package ZWA
+ */
 require_once '../config/init.php';
 
 if (empty($_SESSION['user_id'])) {

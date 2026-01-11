@@ -1,4 +1,12 @@
 <?php 
+/**
+ * Uživatelský profil (profile.php)
+ *
+ * Zobrazuje informace o uživateli, jeho vlastní inzeráty a koupené položky.
+ * Obsahuje také zpracování mazání inzerátu přes POST `delete_offer_id`.
+ *
+ * @package ZWA
+ */
 require_once '../config/init.php'; 
     
 if (empty($_SESSION['user_id'])) {

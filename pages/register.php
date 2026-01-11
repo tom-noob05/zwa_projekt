@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         $insert = $pdo->prepare("INSERT INTO users (`jmeno`, `prijmeni`, `email`, `username`, `password`, `role_id` ) VALUES (?, ?, ?, ?, ?, ?);");
         $insert->execute([$val_jmeno, $val_prijmeni, $val_email, $val_username, $hashedPassword, 2]);   //2 je role_id pro roli 'user'
 
-        $alertMessage = "Registered successfully!";
+        $alertMessage = "Registrace proběhla úspěšně!";
         $redirectUrl = "/pages/login.php";
     }
 }
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Registrace</title>
     <link rel="stylesheet" href="/public/styles/navbar.css">
     <link rel="stylesheet" href="/public/styles/register.css">
 </head>
@@ -71,25 +71,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         <div class="card">
             <h2>Registrace</h2>
             <form method="POST" action="" onsubmit="return validatePassword()">
-                <label for="jmeno">Jmeno: </label>
+                <label for="jmeno">Jméno: </label>
                 <input type="text" name="jmeno" value="<?php echo htmlspecialchars($val_jmeno); ?>" required><br>
                 
-                <label for="prijmeni">Prijmeni: </label>
+                <label for="prijmeni">Příjmení: </label>
                 <input type="text" name="prijmeni" value="<?php echo htmlspecialchars($val_prijmeni); ?>" required><br>
                 
                 <label for="email">Email: </label>
                 <input type="email" name="email" value="<?php echo htmlspecialchars($val_email); ?>" required><br>
                 
-                <label for="username">Username: </label>
+                <label for="username">Uživatelské jméno: </label>
                 <input type="text" name="username" value="<?php echo htmlspecialchars($val_username); ?>" required><br>
                 
-                <label for="password">Password: </label>
+                <label for="password">Heslo: </label>
                 <input type="password" name="password" id="password" required><br>
                 
-                <label for="confirmPassword">Confirm password: </label>
+                <label for="confirmPassword">Potvrzení hesla: </label>
                 <input type="password" name="confirmPassword" id="confirmPassword" required><br>
                 
-                <input type="submit" value="Register">
+                <input type="submit" value="Registrovat">
             </form>
 
             <?php
