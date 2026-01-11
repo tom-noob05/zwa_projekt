@@ -1,4 +1,16 @@
 <?php
+/**
+ * Handles user login form submission and authentication.
+ *
+ * Expected POST params:
+ *  - username: user's username
+ *  - password: user's password
+ *
+ * On successful authentication the user's id is stored in
+ * $_SESSION['user_id'] and the user is redirected to the homepage.
+ *
+ * @package ZWA
+ */
 require_once '../config/init.php';
 
 // zalozeni promennych k pozdejsimu hlaseni chyb / vraceni hodnoty do formulare

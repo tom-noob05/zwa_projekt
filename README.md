@@ -12,3 +12,18 @@ Přihlášení uživatelé mohou nabídky navíc tvořit a kupovat.
 Kvůli daným omezením v zadání projektu probíhá platba domluvou mezi prodávajícím a kupujícím uživatelem.
 
 _Na projektu pracují: Tomáš Mamica, Tadeáš Krása_
+
+---
+
+## Dokumentace
+- Produktová dokumentace (pro zadavatele): `documentation/product_documentation.md`
+- Programátorská dokumentace (pro vývojáře): `documentation/programmer_documentation.md`
+- Dokumentace generovaná z PHPDoc: `documentation/auto_generated_documentation.md`
+
+Pokud chcete vygenerovat API dokumentaci HTML: nainstalujte `phpdocumentor` přes Composer a spusťte:
+
+```
+composer require --dev phpdocumentor/phpdocumentor
+vendor/bin/phpdoc -d . -t documentation/api
+```
+

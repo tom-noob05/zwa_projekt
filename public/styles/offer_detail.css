@@ -42,3 +42,43 @@ img {
     letter-spacing: 1px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+#buy-btn {
+    display: block;
+    width: 100%;
+    /* Roztáhne se na celou šířku obsahu */
+    max-width: 300px;
+    /* Ale nebude širší než 300px */
+    margin: 30px auto 0 auto;
+    /* Vycentrování */
+    padding: 15px 30px;
+    background-color: #2ecc71;
+    /* Hezká zelená */
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#buy-btn:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+#buy-btn:active {
+    transform: translateY(0);
+}
+
+#buy-btn:disabled {
+    background-color: #7f8c8d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
