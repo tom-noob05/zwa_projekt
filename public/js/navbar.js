@@ -1,4 +1,6 @@
-function confirmLogout() {
+/*
+ * navbar.js — obslužné funkce pro navigaci (logout/login tlačítka)
+ */function confirmLogout() {
     logout = confirm('Opravdu se chcete odhlásit?');
     if (logout) {
         window.location.href = '/pages/logout.php';

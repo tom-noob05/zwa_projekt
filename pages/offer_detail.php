@@ -1,4 +1,13 @@
 <?php 
+/**
+ * Detail inzerátu + nákup (offer_detail.php)
+ *
+ * Zobrazuje detail inzerátu (HTML) a přijímá AJAX POST requesty pro nákup
+ * (`buy_offer_id`). POST vrací JSON: { success: bool, message?: string }.
+ * Transakce jsou použity pro atomické provedení UPDATE + INSERT do `bought_offers`.
+ *
+ * @package ZWA
+ */
 require_once '../config/init.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {

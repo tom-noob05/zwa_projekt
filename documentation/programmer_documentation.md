@@ -61,6 +61,21 @@ Poznámka: `status` v `offers` používá hodnoty jako `active` nebo `sold`.
   - Naplní DOM prvky (`#offer-name`, `#offer-price` ...)
   - Postup nákupu: POST na stejnou stránku s `buy_offer_id`, zpracovává odpověď a přesměruje/nebo zobrazí chybu
 
+### Administrace nabídek (`pages/admin_offer_list.php`) 🔧
+- Účel: zobrazit administrátorovi přehled všech inzerátů s možností úprav a zobrazení detailu.
+- Přístup: stránka kontroluje `$_SESSION['user_id']` a dotazuje `users` pro ověření `role_id == 1`.
+- Stránkování:
+  - Implementováno server‑side pomocí `LIMIT :limit OFFSET :offset` v SQL.
+  - Proměnné: `$itemsPerPage` (počet položek na stránku), `$page` (z GET), `$offset = ($page - 1) * $itemsPerPage`.
+  - Backend také spočítá celkový počet položek (`SELECT COUNT(*) FROM offers`) a vypočítá `$totalPages = ceil($totalOffers / $itemsPerPage)`.
+- Výstup:
+  - Data se vypisují escapovaná (`htmlspecialchars`) aby se snížilo riziko XSS.
+  - Paginace se renderuje server‑side a poskytuje odkazy `?page=N` k navigaci.
+- Doporučení pro rozšíření:
+  - Přidat filtrování a řazení (např. podle stavu `status` nebo prodejce `seller_id`) pomocí parametrů GET (přidat sanitaci a bindované parametry).
+  - Zavést AJAX page loader, pokud chcete rychlejší navigaci, ale vždy mít server‑side provedení jako fallback.
+  - Přidat batch‑akce (smazat více záznamů najednou) s CSRF ochranou a transakcemi.
+
 ---
 
 ## Bezpečnostní a kvalitativní poznámky ⚠️

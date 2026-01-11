@@ -1,4 +1,20 @@
 <?php
+/**
+ * Vytvoření inzerátu (offer_create.php)
+ *
+ * Tento skript zobrazuje formulář pro vytvoření nového inzerátu a
+ * zpracovává POST request pro uložení do databáze. Ověřuje, že uživatel
+ * je přihlášen a bezpečně zpracovává upload obrázku (ukládá cestu do DB).
+ *
+ * POST parametry očekávané:
+ * - title, price, category_id, condition, description, image (file)
+ *
+ * Bezpečnostní poznámky:
+ * - Kontrolovat MIME/obsah nahraného souboru (getimagesize), velikost
+ * - Používat prepared statements pro DB
+ *
+ * @package ZWA
+ */
 require_once '../config/init.php'; 
 
 if (!isset($_SESSION['user_id'])) {

@@ -1,11 +1,19 @@
 <?php
+/**
+ * Navigační panel (navbar.php)
+ *
+ * Načítá (pokud je přihlášen) uživatele z DB pro zobrazení přihlašovacího
+ * stavu a načítá seznam kategorií z DB. Tento soubor je includován do hlavních
+ * layoutů a obsahuje také odkaz na tiskové styly (`print.css`).
+ *
+ * @package ZWA
+ */
 if (!empty($_SESSION['user_id']) && isset($pdo)) {
     $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `id` = ? LIMIT 1;");
     $stmt->execute([$_SESSION['user_id']]);
     $fetched_data = $stmt->fetch();
     if (!empty($fetched_data)) $user = $fetched_data;
 }
-
 if (isset($pdo)) {
     try {
         $sql = "SELECT * from `categories`;";

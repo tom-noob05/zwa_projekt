@@ -1,3 +1,8 @@
+/*
+ * offer_details.js — načítá detail inzerátu a implementuje AJAX nákup (POST)
+ * - Očekává JSON z `pages/offers.php?id=...`
+ * - Provádí POST s `buy_offer_id` a ošetřuje JSON odpověď
+ */
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
 

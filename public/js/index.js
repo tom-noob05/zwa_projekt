@@ -1,3 +1,8 @@
+/*
+ * index.js — načítání a render hlavní stránky (inzeráty).
+ * - používá `pages/offers.php` endpoint pro JSON
+ * - bezpečně vytváří DOM prvky (textContent) místo vkládání neescapovaného HTML
+ */
 const urlParams = new URLSearchParams(window.location.search);
 const categoryId = urlParams.get('category_id');
 

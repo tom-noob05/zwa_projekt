@@ -1,4 +1,18 @@
 <?php
+/**
+ * Admin - seznam nabídek
+ *
+ * Tento skript renderuje stránku pro administrátora s paginovaným výpisem
+ * všech inzerátů. Obsahuje jednoduchou kontrolu přihlášení a role, server‑side
+ * stránkování (LIMIT/OFFSET) a bezpečné vypisování dat pomocí `htmlspecialchars()`.
+ *
+ * Bezpečnostní poznámky (stručně):
+ *  - Pouze uživatelé s `role_id == 1` mají přístup
+ *  - Výstup je escapován pro prevenci XSS
+ *  - SQL používá připravené dotazy tam, kde je to nutné (i když zde nejsou vstupní řetězce)
+ *
+ * @package ZWA
+ */
 require_once '../config/init.php';
 
 // --- Kontrola přihlášení a role ---
@@ -9,6 +23,7 @@ if (empty($_SESSION['user_id'])) {
     $userId = $_SESSION['user_id'];
 }
 
+// Načtení aktuálního uživatele z DB (použito pro kontrolu role)
 if (!empty($userId) && !empty($pdo)){
     $stmt = $pdo->prepare("SELECT * FROM `users` WHERE `id` = ? LIMIT 1;");
     $stmt->execute([$userId]);
@@ -18,12 +33,13 @@ if (!empty($userId) && !empty($pdo)){
     exit;
 }
 
+// Pokud uživatel není admin, přesměruj ho pryč
 if ($user['role_id'] != 1){
     header("Location: /pages/login.php");
     exit;
 }
 
-// strankovani
+// Stránkování: počet položek na stránku (konfigurovatelné)
 $itemsPerPage = 6;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
