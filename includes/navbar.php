@@ -18,6 +18,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
 ?>
 
 <link rel="stylesheet" href="/public/styles/navbar.css">
+<link rel="stylesheet" href="/public/styles/print.css" media="print">
 <nav class="navbar">
     <section class="links">
         <div class="nav-item">

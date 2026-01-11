@@ -1,0 +1,114 @@
+/* Print styles for ZWA
+   Aim: Make pages printer-friendly and hide non-essential UI elements.
+*/
+
+/* General */
+@media print {
+
+    /* Use a readable serif font and high contrast */
+    body {
+        color: #000;
+        background: #fff !important;
+        font-family: Georgia, 'Times New Roman', serif;
+        line-height: 1.4;
+        -webkit-print-color-adjust: exact;
+    }
+
+    /* Hide navigation, buttons, search, pagination and forms */
+    .navbar,
+    .navbar * {
+        display: none !important;
+    }
+
+    .nav-item,
+    .account-section,
+    .pagination,
+    .pagination-wrapper,
+    .btn-submit,
+    .btn-delete,
+    .btn-edit,
+    button {
+        display: none !important;
+    }
+
+    /* Hide footers and auxiliary elements */
+    footer,
+    .footer,
+    .admin-controls,
+    .profile-actions,
+    .form-footer {
+        display: none !important;
+    }
+
+    /* Make content full-width */
+    .content,
+    main,
+    .container,
+    .profile-container {
+        width: auto;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Improve readability for lists and offer cards */
+    .offer,
+    .profile-offer-item,
+    .offers-list,
+    .offers-grid {
+        page-break-inside: avoid;
+        border: 1px solid #000;
+        padding: 8px;
+        margin: 8px 0;
+    }
+
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Avoid printing background images/colors */
+    * {
+        background: transparent !important;
+        color: #000 !important;
+    }
+
+    /* Page breaks for sections */
+    .section-header {
+        page-break-before: always;
+    }
+
+    /* Ensure links show destination clearly */
+    a[href]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.9em;
+    }
+
+    /* Make tables print friendly */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 6px;
+    }
+
+    /* Small adjustments */
+    .name {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    h1,
+    h2,
+    h3 {
+        color: #000;
+    }
+
+    /* Avoid printing interactive or hidden content */
+    .hidden {
+        display: none !important;
+    }
+}
