@@ -22,7 +22,7 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
 <nav class="navbar">
     <section class="links">
         <div class="nav-item">
-            <a href="/" class="nav-link"><b>Home</b></a>
+            <a href="/" class="nav-link"><b>Domů</b></a>
         </div>
         <?php if ($currentPage !== 'login.php' && $currentPage !== 'register.php'): ?>
             <div class="nav-item dropdown">
@@ -48,11 +48,11 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
             <?php endif; ?>
             
             <div class="nav-item clickable" onclick="confirmLogout()">
-                <button id="logoutbtn" class="navbar-button">Log Out</button>
+                <button id="logoutbtn" class="navbar-button">Odhlásit se</button>
             </div>
         <?php else: ?>
             <div class="nav-item clickable" onclick="location.href='/pages/login.php'">
-                <button id="loginbtn" class="navbar-button">Log In</button>
+                <button id="loginbtn" class="navbar-button">Přihlásit se</button>
             </div>
         <?php endif; ?>
     </section>

@@ -76,7 +76,7 @@ function loadOffers(page = 1) {
 
                 const link = document.createElement('a');
                 link.href = `pages/offer_detail.php?id=${encodeURIComponent(offer.id)}`;
-                link.textContent = 'see more';
+                link.textContent = 'Zobrazit';
                 card.appendChild(link);
 
                 contentArea.appendChild(card);
