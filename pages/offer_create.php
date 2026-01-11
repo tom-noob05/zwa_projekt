@@ -1,13 +1,10 @@
 <?php
 require_once '../config/init.php'; 
 
-//prihlaseni
 if (!isset($_SESSION['user_id'])) {
-    // $_SESSION['user_id'] = 1; // Pro testování
     die("Chyba: Uživatel není přihlášen.");
 }
 
-//nacteni kategorii
 try {
     $stmt_cat = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
     $categories = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
@@ -15,7 +12,6 @@ try {
     die("Chyba při načítání kategorií: " . $e->getMessage());
 }
 
-//zpracovani formulare
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $title = $_POST['title'] ?? '';
@@ -27,8 +23,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $seller_id = $_SESSION['user_id'];
     $status = 'active';
 
-    //vlozeni do db
-    $sql = "INSERT INTO offers (`title`, `description`, `price`, `status`, `condition`, `seller_id`, `category_id`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $imagePath = null;
+
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = '../public/uploads/';
+        
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $fileTmpPath = $_FILES['image']['tmp_name'];
+        $fileName = $_FILES['image']['name'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+        if (in_array($fileExtension, $allowedExtensions)) {
+            $newFileName = uniqid('img_', true) . '.' . $fileExtension;
+            $destPath = $uploadDir . $newFileName;
+
+            if (move_uploaded_file($fileTmpPath, $destPath)) {
+                $imagePath = '/public/uploads/' . $newFileName;
+            }
+        }
+    }
+
+    $sql = "INSERT INTO offers (`title`, `description`, `price`, `status`, `condition`, `seller_id`, `category_id`, `img_path`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
     try {
         $stmt = $pdo->prepare($sql);
@@ -40,7 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $status, 
             $condition, 
             $seller_id, 
-            $category_id
+            $category_id,
+            $imagePath
         ]);
 
         if ($result) {
@@ -78,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="form-group">
                     <label for="image">Přidejte obrázek:</label>
-                    <input type="file" id="image" name="image">
+                    <input type="file" id="image" name="image" accept="image/*">
                 </div>
 
                 <div class="form-group">

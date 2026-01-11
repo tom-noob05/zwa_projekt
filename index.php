@@ -39,9 +39,11 @@
             contentArea.innerHTML = '';
 
             offers.forEach(offer => {
+                console.log(offer.img_path)
+                const imageSource = offer.img_path ? offer.img_path : "/misc/1092132_polstarek-kocicka-30x45-cm.jpeg";
                 const offerDiv = `
                     <div class="offer" id="${offer.id}">
-                        <img src="/misc/1092132_polstarek-kocicka-30x45-cm.jpeg" alt="${escapeHtml(offer.title)}">
+                        <img src="${imageSource}" alt="${escapeHtml(offer.title)}">
                         <p class="offer_name">${escapeHtml(offer.title)}</p>
                         <p class="condition">${offer.condition}</p>
                         <p class="offer_price">${offer.price} Kč</p>

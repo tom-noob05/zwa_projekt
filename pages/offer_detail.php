@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         $updateStmt->execute([$offerId]);
 
         if ($updateStmt->rowCount() === 0) {
-            throw new Exception("Inzerát již není k dispozici.");
+            throw new Exception("Inzerát již byl prodán nebo neexistuje.");
         }
 
         $insertStmt = $pdo->prepare("INSERT INTO bought_offers (user_id, offer_id, bought_at) VALUES (?, ?, NOW())");
@@ -30,7 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         exit;
 
     } catch (Exception $e) {
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         exit;
     }
@@ -53,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         <h1 id="offer-name" class="name">Načítám...</h1>
         
         <div class="img-container">
-            <img id="offer-img" src="../misc/default_placeholder.jpeg" alt="obrazek inzeratu">
+            <img id="offer-img" src="" alt="obrazek inzeratu" style="max-width: 100%; height: auto;">
         </div>
         
         <hr>
@@ -70,6 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         <hr>
 
         <button id="buy-btn">BUY</button>
+
+        <div id="sold-info" hidden>
+            <h2 style="color: white; background: red; padding: 10px; text-align: center;">TENTO PŘEDMĚT JIŽ BYL PRODÁN</h2>
+        </div>
     </div>
 
     <script>
@@ -79,34 +85,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
     if (id) {
         fetch('offers.php?id=' + id)
             .then(res => {
-                if (!res.ok) throw new Error("Inzerát nebyl nalezen");
+                if (!res.ok) throw new Error("Inzerát nebyl nalezen v databázi.");
                 return res.json();
             })
             .then(offer => {
-                document.getElementById('offer-name').textContent = offer.title;
-                document.getElementById('offer-price').textContent = offer.price;
-                document.getElementById('offer-condition').textContent = offer.condition;
-                document.getElementById('offer-description').textContent = offer.description;
+                document.getElementById('offer-name').textContent = offer.title || 'Bez názvu';
+                document.getElementById('offer-price').textContent = offer.price || '0';
+                document.getElementById('offer-condition').textContent = offer.condition || '--';
+                document.getElementById('offer-description').textContent = offer.description || '--';
                 document.getElementById('offer-category').textContent = offer.category_name || 'Bez kategorie';
                 
-                if (offer.image_path) {
-                    document.getElementById('offer-img').src = offer.image_path;
+                if (offer.img_path) { 
+                    document.getElementById('offer-img').src = ".." + offer.img_path;
                 }
-                document.title = offer.title + " | Detail inzerátu";
 
-                if(offer.status == ""){
+                document.title = (offer.title || "Detail") + " | Detail inzerátu";
+
+                if (offer.status && offer.status !== 'active') {
                     document.getElementById('buy-btn').hidden = true;
+                    document.getElementById('sold-info').hidden = false;
                 }
             })
             .catch(err => {
-                console.error("Chyba:", err);
-                document.querySelector('.content').innerHTML = "<h2>Chyba: Inzerát se nepodařilo načíst.</h2>";
+                console.error("Chyba při načítání:", err);
+                document.querySelector('.content').innerHTML = "<h2>Chyba: Inzerát se nepodařilo načíst. Zkontrolujte konzoli.</h2>";
             });
     }
 
     document.getElementById('buy-btn').addEventListener('click', function() {
         if (!id) return;
-
         if (!confirm('Opravdu chcete tento předmět koupit?')) return;
 
         const formData = new FormData();
@@ -123,11 +130,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
                 window.location.href = 'profile.php';
             } else {
                 alert('Chyba: ' + data.message);
+                location.reload();
             }
         })
         .catch(err => {
-            console.error("Chyba:", err);
-            alert('Nastala chyba při nákupu.');
+            console.error("Chyba při nákupu:", err);
+            alert('Nastala chyba při komunikaci se serverem.');
         });
     });
     </script>
