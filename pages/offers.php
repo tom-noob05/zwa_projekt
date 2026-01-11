@@ -12,7 +12,7 @@ try {
                        o.seller_id, c.name as category_name, o.created_at 
                 FROM offers o
                 LEFT JOIN categories c ON o.category_id = c.id
-                WHERE o.`status` = 'active' AND o.`id` = ? 
+                WHERE o.`id` = ? 
                 LIMIT 1;";
         
         $stmt = $pdo->prepare($sql);
