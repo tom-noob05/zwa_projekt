@@ -100,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class="form-group">
                     <label for="image">Přidejte obrázek:</label>
-                    <input type="file" id="image" name="image" accept="image/*">
+                    <input type="file" id="image" name="image" required accept="image/*">
                 </div>
 
                 <div class="form-group">
