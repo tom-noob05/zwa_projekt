@@ -130,6 +130,20 @@ if (isset($pdo)) {
                     <?php endif; ?>
                 </div>
             </section>
+
+            <?php if (isset($user['role_id']) && $user['role_id'] === 1): ?> 
+            <section class="offer-section">
+                <div class="section-header">
+                    <h2>Admin</h2>
+                </div>
+                
+                <div class="admin-controls">
+                    <a href="/pages/admin_offer_list.php" class="btn-view admin-btn">Nabídky</a>
+                    <a href="/pages/admin_user_list.php" class="btn-edit admin-btn">Uživatelé</a>
+                </div>
+            </section>
+            <?php endif; ?>
+
         </div>
     </main>
 </body>
