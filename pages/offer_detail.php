@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         $updateStmt->execute([$offerId]);
 
         if ($updateStmt->rowCount() === 0) {
-            throw new Exception("Inzerát již není k dispozici.");
+            throw new Exception("Inzerát již byl prodán nebo neexistuje.");
         }
 
         $insertStmt = $pdo->prepare("INSERT INTO bought_offers (user_id, offer_id, bought_at) VALUES (?, ?, NOW())");
@@ -30,7 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         exit;
 
     } catch (Exception $e) {
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         exit;
     }
@@ -53,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         <h1 id="offer-name" class="name">Načítám...</h1>
         
         <div class="img-container">
-            <img id="offer-img" src="../misc/default_placeholder.jpeg" alt="obrazek inzeratu">
+            <img id="offer-img" src="" alt="obrazek inzeratu" style="max-width: 100%; height: auto;">
         </div>
         
         <hr>
@@ -70,66 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         <hr>
 
         <button id="buy-btn">BUY</button>
+
     </div>
 
-    <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-
-    if (id) {
-        fetch('offers.php?id=' + id)
-            .then(res => {
-                if (!res.ok) throw new Error("Inzerát nebyl nalezen");
-                return res.json();
-            })
-            .then(offer => {
-                document.getElementById('offer-name').textContent = offer.title;
-                document.getElementById('offer-price').textContent = offer.price;
-                document.getElementById('offer-condition').textContent = offer.condition;
-                document.getElementById('offer-description').textContent = offer.description;
-                document.getElementById('offer-category').textContent = offer.category_name || 'Bez kategorie';
-                
-                if (offer.image_path) {
-                    document.getElementById('offer-img').src = offer.image_path;
-                }
-                document.title = offer.title + " | Detail inzerátu";
-
-                if(offer.status == ""){
-                    document.getElementById('buy-btn').hidden = true;
-                }
-            })
-            .catch(err => {
-                console.error("Chyba:", err);
-                document.querySelector('.content').innerHTML = "<h2>Chyba: Inzerát se nepodařilo načíst.</h2>";
-            });
-    }
-
-    document.getElementById('buy-btn').addEventListener('click', function() {
-        if (!id) return;
-
-        if (!confirm('Opravdu chcete tento předmět koupit?')) return;
-
-        const formData = new FormData();
-        formData.append('buy_offer_id', id);
-
-        fetch(window.location.href, {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert('Úspěšně koupeno!');
-                window.location.href = 'profile.php';
-            } else {
-                alert('Chyba: ' + data.message);
-            }
-        })
-        .catch(err => {
-            console.error("Chyba:", err);
-            alert('Nastala chyba při nákupu.');
-        });
-    });
-    </script>
+    <script src = "/public/js/offer_details.js"></script>
 </body>
 </html>

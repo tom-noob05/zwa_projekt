@@ -9,7 +9,7 @@ try {
 
     if ($id) {
         $sql = "SELECT o.`id`, o.`title`, o.`description`, o.`price`, o.`status`, o.`condition`, 
-                       o.seller_id, c.name as category_name, o.created_at 
+                       o.seller_id, c.name as category_name, o.created_at, o.img_path 
                 FROM offers o
                 LEFT JOIN categories c ON o.category_id = c.id
                 WHERE o.`id` = ? 
@@ -25,9 +25,9 @@ try {
             exit;
         }
     } else {
-        $sql = "SELECT `id`, `title`, `price`, `condition` 
-                FROM offers 
-                WHERE `status` = 'active';";
+        $sql = "SELECT `id`, `title`, `price`, `condition`, `img_path`
+        FROM offers 
+        WHERE `status` = 'active';";
         
         $stmt = $pdo->query($sql);
         $data = $stmt->fetchAll();
