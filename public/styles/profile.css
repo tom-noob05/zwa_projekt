@@ -69,19 +69,38 @@ body {
     color: #3A6B74;
 }
 
-.edit-profile-btn {
-    background: #3A6B74;
-    color: white;
-    border: none;
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.edit-profile-btn,
+.create-offer-btn {
+    text-decoration: none;
     padding: 10px 25px;
     border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
     transition: 0.3s;
+    display: inline-block;
 }
 
-.edit-profile-btn:hover {
-    background: #2a4d54;
+.edit-profile-btn {
+    background: #3A6B74;
+    color: white;
+    border: none;
+}
+
+.create-offer-btn {
+    background: #284B63;
+    color: white;
+}
+
+.edit-profile-btn:hover,
+.create-offer-btn:hover {
+    opacity: 0.9;
     transform: translateY(-2px);
 }
 
@@ -112,10 +131,6 @@ body {
     font-size: 1.2rem;
     margin: 0;
     color: #333;
-}
-
-.section-header i {
-    color: #3A6B74;
 }
 
 .empty-msg {
@@ -149,12 +164,30 @@ body {
     color: #284B63;
 }
 
-.actions a {
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.actions form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.actions a,
+.btn-delete {
     text-decoration: none;
-    font-size: 14px;
-    margin-left: 10px;
-    padding: 5px 10px;
+    font-size: 13px;
+    padding: 6px 12px;
     border-radius: 3px;
+    font-weight: normal;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s;
 }
 
 .btn-view {
@@ -167,49 +200,18 @@ body {
     color: white !important;
 }
 
-.profile-offer-item span {
-    margin: 0;
-    padding: 0;
-}
-
-/* Zarovnání akcí do jedné řady */
-.actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    /* Mezera mezi tlačítky */
-}
-
-/* Úprava formuláře, aby nezalamoval řádek */
-.actions form {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-}
-
 .btn-delete {
     background-color: #c0392b;
     color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    font-size: 14px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.3s;
 }
 
+.btn-view:hover,
+.btn-edit:hover,
 .btn-delete:hover {
-    background-color: #a33226;
+    filter: brightness(1.2);
 }
 
-.actions .btn-view,
-.actions .btn-edit,
-.actions .btn-delete {
-    display: inline-block;
-    text-decoration: none;
-    font-size: 14px;
-    padding: 5px 10px;
-    border-radius: 3px;
+.profile-offer-item span {
     margin: 0;
+    padding: 0;
 }

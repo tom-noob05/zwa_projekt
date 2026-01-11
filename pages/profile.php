@@ -59,9 +59,6 @@ if (isset($pdo)) {
     <main class="profile-container">
         <section class="profile-header-card">
             <div class="pfp-container">
-                <div id="pfp-placeholder">
-                    <i class="fa-solid fa-user"></i>
-                </div>
             </div>
             
             <div class="user-main-info">
@@ -71,12 +68,13 @@ if (isset($pdo)) {
 
             <div class="user-details-grid">
                 <div class="detail-item">
-                    <i class="fa-solid fa-envelope"></i>
                     <span><?php echo htmlspecialchars($user['email'] ?? ''); ?></span>
                 </div>
             </div>
-            
-            <a href="profile_edit.php?id=<?php echo $user['id']; ?>" class="edit-profile-btn">Upravit profil</a>
+            <div class="profile-actions">
+                <a href="profile_edit.php?id=<?php echo $user['id']; ?>" class="edit-profile-btn">Upravit profil</a>
+                <a href="offer_create.php" class="create-offer-btn">Vytvořit inzerát</a>
+            </div>
         </section>
 
         <div class="offers-grid">
