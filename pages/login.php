@@ -28,8 +28,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? '');
 
-        if (!empty($username) && !empty($password))
+        if (empty($username) || empty($password))
         {
+            $errorMsg = "Vyplňte uživatelské jméno i heslo.";
+        }
+        elseif (mb_strlen($username) > 45)
+        {
+            $errorMsg = "Uživatelské jméno překročilo limit 45 znaků.";
+        }
+        elseif (mb_strlen($password) > 255)
+        {
+            $errorMsg = "Helo překročilo limit 255 znaků.";
+        }
+        else
+        {
+         
             // natahne se zaznam z 'users'
             $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?;");
             $stmt->execute([$username]);
@@ -74,12 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         <form method = "post" action="#">
 
             <div class="form-group">
-                <label for="username">Uživatelské jméno</label>
+                <label for="username">*Uživatelské jméno</label>
                 <input type="text" id="username" name="username" placeholder="Uživatelské jméno" value="<?php echo $usernameValue; ?>" required <?php echo empty($usernameValue) ? 'autofocus' : ''; ?> >
             </div>
 
             <div class="form-group">
-                <label for="password">Heslo</label>
+                <label for="password">*Heslo</label>
                 <input type="password" id="password" name="password" placeholder="Heslo" required <?php echo !empty($usernameValue) ? 'autofocus' : ''; ?> >
             </div>
 

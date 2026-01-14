@@ -20,7 +20,7 @@ $offer = null;
 $offerId = $_GET['id'] ?? null;
 $userId = $_SESSION['user_id'];
 $success = null;
-$error = null;
+$errors = [];
 
 try {
     $stmt_cat = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
@@ -50,33 +50,66 @@ if (!empty($offerId)) {
         $offer = $stmt->fetch();
 
         if (!$offer) {
-            $error = "Inzerát nebyl nalezen nebo nemáte oprávnění k jeho úpravě.";
+            $errors[] = "Inzerát nebyl nalezen nebo nemáte oprávnění k jeho úpravě.";
         }
     } catch (\PDOException $e) {
-        $error = "Chyba databáze: " . $e->getMessage();
+        $errors[] = "Chyba databáze: " . $e->getMessage();
     }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
     try {
-        $title = $_POST['title'] ?? '';
-        $price = $_POST['price'] ?? 0;
-        $category_id = $_POST['category_id'] ?? null;
-        $condition = $_POST['condition'] ?? '';
-        $description = $_POST['description'] ?? '';
+        $title = trim($_POST['title'] ?? '');
+        $price = trim($_POST['price'] ?? 0);
+        $category_id = trim($_POST['category_id'] ?? null);
+        $condition = trim($_POST['condition'] ?? '');
+        $description = trim($_POST['description'] ?? '');
         
+        if (empty($title)) {
+            $errors[] = "Název inzerátu je povinný.";
+        } elseif (mb_strlen($title) > 45) {
+            $errors[] = "Název inzerátu je příliš dlouhý (max 45 znaků).";
+        }
+
+        if (empty($price)) {
+            $errors[] = "Cena je povinná.";
+        } elseif (!filter_var($price, FILTER_VALIDATE_FLOAT) || $price < 0) {
+            $errors[] = "Cena musí být kladné číslo.";
+        }
+
+        $allowedConditions = ['new', 'used', 'damaged'];
+        if (empty($condition)) {
+            $errors[] = "Stav zboží je povinný.";
+        } elseif (!in_array($condition, $allowedConditions)) {
+            $errors[] = "Neplatná hodnota pro stav zboží.";
+        }
+
+        if (empty($category_id) || !filter_var($category_id, FILTER_VALIDATE_INT)) {
+            $errors[] = "Vyberte prosím platnou kategorii.";
+        }
+
+        if (empty($description)) {
+            $errors[] = "Popis inzerátu je povinný.";
+        }
+
         if ($user['role_id'] == 1) {
             $status = $_POST['status'] ?? 'active';
         } else {
             $status = $offer['status'];
         }
 
-        $stmt = $pdo->prepare("UPDATE offers SET title = ?, `description` = ?, `price` = ?, `category_id` = ?, `condition` = ?, `status` = ? WHERE `id` = ?;");
-        $stmt->execute([$title, $description, $price, $category_id, $condition, $status, $offerId]);
-        
-        $success = true;
+        if (empty($errors)) {
+            try {
+                $stmt = $pdo->prepare("UPDATE offers SET title = ?, `description` = ?, `price` = ?, `category_id` = ?, `condition` = ?, `status` = ? WHERE `id` = ?;");
+                $stmt->execute([$title, $description, $price, $category_id, $condition, $status, $offerId]);
+                $success = true;
+            } catch (\PDOException $e) {
+                $errors[] = "Nepodařilo se uložit změny: " . $e->getMessage();
+            }
+        }
+
     } catch (\PDOException $e) {
-        $error = "Nepodařilo se uložit změny: " . $e->getMessage();
+        $errors[] = "Nepodařilo se uložit změny: " . $e->getMessage();
     }
 
     if ($success) {
@@ -98,11 +131,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
 
 <div class="container">
     <div class="form-box">
-        <?php if ($error): ?>
-            <div style="background: #ff6b6b; padding: 15px; border-radius: 5px; margin-bottom: 20px; color: white; text-align: center;">
-                <?= $error ?>
+        <?php if (!empty($errors)): ?>
+            <div id="error-div">
+                <ul>
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
-            <a href="/pages/profile.php" style="color: antiquewhite;">Zpět na profil</a>
+            <?php if (!$offer): ?>
+                <a href="/pages/profile.php" id="backtoprofile">Zpět na profil</a>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($offer): ?>
@@ -111,22 +150,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
                 <input type="hidden" name="id" value="<?= htmlspecialchars($offer['id']); ?>">
 
                 <div class="form-group">
-                    <label for="title">Název:</label>
+                    <label for="title">*Název:</label>
                     <input type="text" id="title" name="title" value="<?= htmlspecialchars($offer['title']); ?>" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Popis:</label>
+                    <label for="description">*Popis:</label>
                     <textarea id="description" name="description" required><?= htmlspecialchars($offer['description']); ?></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="price">Cena (Kč):</label>
+                    <label for="price">*Cena (Kč):</label>
                     <input type="number" id="price" name="price" value="<?= htmlspecialchars($offer['price']); ?>" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="category">Kategorie:</label>
+                    <label for="category">*Kategorie:</label>
                     <select id="category" name="category_id" required>
                         <option value="" disabled>Vyberte kategorii</option>
                         <?php foreach ($categories as $cat): ?>
@@ -138,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
                 </div>
 
                 <div class="form-group">
-                    <label for="condition">Kondice:</label>
+                    <label for="condition">*Kondice:</label>
                     <select id="condition" name="condition" required>
                         <option value="" disabled>Vyberte stav</option>
                         <option value="new" <?= ($offer['condition'] == 'new') ? 'selected' : '' ?>>Nové</option>
@@ -148,7 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $offer) {
                 </div>
                 <?php if ($user['role_id'] == 1): ?>
                 <div class="form-group">
-                    <label for="status">Stav:</label>
+                    <label for="status">*Stav:</label>
                     <select id="status" name="status">
                         <option value="active" <?= ($offer['status'] == 'active') ? 'selected' : '' ?>>Aktivní</option>
                         <option value="bought" <?= ($offer['status'] == 'bought') ? 'selected' : '' ?>>Koupené</option>

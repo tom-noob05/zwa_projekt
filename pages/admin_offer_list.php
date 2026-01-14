@@ -83,6 +83,9 @@ try {
             <h1>Administrace nabídek</h1>
             <a href="profile.php" class="back-link">Zpět na profil</a>
         </div>
+        <?php if (isset($error)): ?>
+                <p id="error-paragraph"><?php echo $error; ?></p>
+        <?php endif; ?>
 
         <div class="table-wrapper">
             <?php if (!empty($paginatedOffers)): ?>

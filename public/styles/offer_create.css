@@ -67,3 +67,18 @@ select {
 .btn-submit:hover {
     background-color: #3b6e73;
 }
+
+h2 {
+    color: whitesmoke;
+    text-align: center;
+}
+
+.error-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: red;
+}

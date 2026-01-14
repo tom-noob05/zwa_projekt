@@ -50,16 +50,16 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
     <section class="account-section">
         <?php if (!empty($user)): ?>
             <?php if ($currentPage !== 'profile.php'): ?> 
-                <div class="nav-item clickable" onclick="location.href='/pages/profile.php'">
+                <div class="nav-item clickable" id="profilediv">
                     <span id="username"><?php echo htmlspecialchars($user['username']); ?></span>
                 </div>
             <?php endif; ?>
             
-            <div class="nav-item clickable" onclick="confirmLogout()">
+            <div class="nav-item clickable" id="logoutdiv">
                 <button id="logoutbtn" class="navbar-button">Odhlásit se</button>
             </div>
         <?php else: ?>
-            <div class="nav-item clickable" onclick="location.href='/pages/login.php'">
+            <div class="nav-item clickable" id="logindiv">
                 <button id="loginbtn" class="navbar-button">Přihlásit se</button>
             </div>
         <?php endif; ?>

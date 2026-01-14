@@ -14,3 +14,17 @@ function validatePassword(){
         return true;
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('registerform');
+
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            let isPassValid = validatePassword();
+
+            if(!isPassValid) {
+                e.preventDefault();
+            }
+        });
+    }
+});
