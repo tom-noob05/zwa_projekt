@@ -117,3 +117,12 @@ a:hover {
 hr {
     visibility: hidden;
 }
+
+#error-div {
+    background: #ff6b6b;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    color: white;
+    text-align: center;
+}

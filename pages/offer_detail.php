@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_offer_id'])) {
         <h1 id="offer-name" class="name">Načítám...</h1>
         
         <div class="img-container">
-            <img id="offer-img" src="" alt="obrazek inzeratu" style="max-width: 100%; height: auto;">
+            <img id="offer-img" src="" alt="obrazek inzeratu">
         </div>
         
         <hr>

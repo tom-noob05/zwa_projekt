@@ -30,27 +30,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     $val_email = $_POST['email'] ?? '';
     $val_username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
-
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1;");
-    $stmt->execute([$val_username, $val_email]);
-    $existingUser = $stmt->fetch();
-
-    if (!empty($existingUser))
-    {
-        if ($existingUser['username'] === $val_username)
+    
+    if (empty($val_jmeno) || empty($val_prijmeni) || empty($val_email) || empty($val_username) || empty($password)) {
+        $alertMessage = "Všechna pole jsou povinná.";
+    }
+    elseif (!filter_var($val_email, FILTER_VALIDATE_EMAIL)) {
+        $alertMessage = "Zadaný email nemá platný formát.";
+    }
+    elseif (mb_strlen($val_jmeno) > 45) {
+        $alertMessage = "Jméno je příliš dlouhé (max 45 znaků).";
+    }
+    elseif (mb_strlen($val_prijmeni) > 45) {
+        $alertMessage = "Příjmení je příliš dlouhé (max 45 znaků).";
+    }
+    elseif (mb_strlen($val_username) > 45) {
+        $alertMessage = "Uživatelské jméno je příliš dlouhé (max 45 znaků).";
+    }
+    elseif (mb_strlen($val_email) > 100) {
+        $alertMessage = "Email je příliš dlouhý (max 100 znaků).";
+    }
+    elseif (mb_strlen($password) > 255) {
+        $alertMessage = "Heslo je příliš dlouhé (max 255 znaků).";
+    }
+    else {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1;");
+        $stmt->execute([$val_username, $val_email]);
+        $existingUser = $stmt->fetch();
+        if (!empty($existingUser))
         {
-            $alertMessage = "Username already exists!";
-        } else if ($existingUser['email'] === $val_email) {
-            $alertMessage = "Email already in use!";
+            if ($existingUser['username'] === $val_username)
+            {
+                $alertMessage = "Username already exists!";
+            } else if ($existingUser['email'] === $val_email) {
+                $alertMessage = "Email already in use!";
+            }
+        } else {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $insert = $pdo->prepare("INSERT INTO users (`jmeno`, `prijmeni`, `email`, `username`, `password`, `role_id` ) VALUES (?, ?, ?, ?, ?, ?);");
+            $insert->execute([$val_jmeno, $val_prijmeni, $val_email, $val_username, $hashedPassword, 2]);   //2 je role_id pro roli 'user'
+            $alertMessage = "Registrace proběhla úspěšně!";
+            $redirectUrl = "/pages/login.php";
         }
-    } else {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $insert = $pdo->prepare("INSERT INTO users (`jmeno`, `prijmeni`, `email`, `username`, `password`, `role_id` ) VALUES (?, ?, ?, ?, ?, ?);");
-        $insert->execute([$val_jmeno, $val_prijmeni, $val_email, $val_username, $hashedPassword, 2]);   //2 je role_id pro roli 'user'
-
-        $alertMessage = "Registrace proběhla úspěšně!";
-        $redirectUrl = "/pages/login.php";
     }
 }
 ?>
@@ -70,23 +90,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <div class="wrapper">
         <div class="card">
             <h2>Registrace</h2>
-            <form method="POST" action="#" onsubmit="return validatePassword()">
-                <label for="jmeno">Jméno: </label>
+            <form method="POST" action="#" id="registerform">
+                <label for="jmeno">*Jméno: </label>
                 <input type="text" id="jmeno" name="jmeno" value="<?php echo htmlspecialchars($val_jmeno); ?>" required><br>
                 
-                <label for="prijmeni">Příjmení: </label>
+                <label for="prijmeni">*Příjmení: </label>
                 <input type="text" id="prijmeni" name="prijmeni" value="<?php echo htmlspecialchars($val_prijmeni); ?>" required><br>
                 
-                <label for="email">Email: </label>
+                <label for="email">*Email: </label>
                 <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($val_email); ?>" required><br>
                 
-                <label for="usernameInput">Uživatelské jméno: </label>
+                <label for="usernameInput">*Uživatelské jméno: </label>
                 <input type="text" id="usernameInput" name="username" value="<?php echo htmlspecialchars($val_username); ?>" required><br>
                 
-                <label for="password">Heslo: </label>
+                <label for="password">*Heslo: </label>
                 <input type="password" id="password" name="password" required><br>
                 
-                <label for="confirmPassword">Potvrzení hesla: </label>
+                <label for="confirmPassword">*Potvrzení hesla: </label>
                 <input type="password" id="confirmPassword" name="confirmPassword" required><br>
                 
                 <input type="submit" value="Registrovat">

@@ -14,7 +14,9 @@ if (empty($_SESSION['user_id'])) {
 
 $loggedInUserId = $_SESSION['user_id'];
 $loggedInUser = null;
+$errors = [];
 
+// nacteni prihlaseneho uzivatele
 try {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? LIMIT 1");
     $stmt->execute([$loggedInUserId]);
@@ -25,14 +27,14 @@ try {
 
 $targetId = $_GET['id'] ?? $loggedInUserId;
 
+// kontrola opravneni
 if ($targetId != $loggedInUserId && $loggedInUser['role_id'] != 1) {
     die("Nemáte oprávnění upravovat tento profil.");
 }
 
 $targetUser = null;
-$error = null;
-$success = false;
 
+// nacteni ciloveho uzivatele
 try {
     $stmtTarget = $pdo->prepare("SELECT * FROM users WHERE id = ? LIMIT 1");
     $stmtTarget->execute([$targetId]);
@@ -42,46 +44,74 @@ try {
         die("Uživatel k úpravě nebyl nalezen.");
     }
 } catch (PDOException $e) {
-    $error = "Chyba při načítání dat: " . $e->getMessage();
+    die("Chyba při načítání dat: " . $e->getMessage());
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $jmeno = $_POST['jmeno'] ?? '';
-    $prijmeni = $_POST['prijmeni'] ?? '';
-    $username = $_POST['username'] ?? '';
-    $email = $_POST['email'] ?? '';
+// priprava promennych pro formular (defaultne z DB)
+$val_jmeno = $targetUser['jmeno'];
+$val_prijmeni = $targetUser['prijmeni'];
+$val_username = $targetUser['username'];
+$val_email = $targetUser['email'];
+$val_role_id = $targetUser['role_id'];
 
+// zpracovani formulare
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $val_jmeno = trim($_POST['jmeno'] ?? '');
+    $val_prijmeni = trim($_POST['prijmeni'] ?? '');
+    $val_username = trim($_POST['username'] ?? '');
+    $val_email = trim($_POST['email'] ?? '');
+    
     if ($loggedInUser['role_id'] == 1) {
-        $role_id = $_POST['role_id'] ?? $targetUser['role_id'];
+        $val_role_id = $_POST['role_id'] ?? $targetUser['role_id'];
     } else {
-        $role_id = $targetUser['role_id'];
+        $val_role_id = $targetUser['role_id'];
     }
 
-    if (empty($jmeno) || empty($prijmeni) || empty($username) || empty($email)) {
-        $error = "Všechna pole jsou povinná.";
-    } else {
+    if (empty($val_jmeno) || empty($val_prijmeni) || empty($val_email) || empty($val_username)) {
+        $errors[]= "Všechna pole jsou povinná.";
+    }
+    
+    if (!filter_var($val_email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Zadaný email nemá platný formát.";
+    }
+
+    if (mb_strlen($val_jmeno) > 45) {
+        $errors[] = "Jméno je příliš dlouhé (max 45 znaků).";
+    }
+    
+    if (mb_strlen($val_prijmeni) > 45) {
+        $errors[] = "Příjmení je příliš dlouhé (max 45 znaků).";
+    }
+    
+    if (mb_strlen($val_username) > 45) {
+        $errors[] = "Uživatelské jméno je příliš dlouhé (max 45 znaků).";
+    }
+    
+    if (mb_strlen($val_email) > 100) {
+        $errors[] = "Email je příliš dlouhý (max 100 znaků).";
+    }
+
+    if (empty($errors)) {
         try {
             $sql = "UPDATE users SET jmeno = ?, prijmeni = ?, username = ?, email = ?, role_id = ? WHERE id = ?";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([$jmeno, $prijmeni, $username, $email, $role_id, $targetId]);
+            $stmt->execute([$val_jmeno, $val_prijmeni, $val_username, $val_email, $val_role_id, $targetId]);
             
-            $success = true;
+            if ($loggedInUser['role_id'] == 1 && $targetId != $loggedInUserId) {
+                header('Location: /pages/admin_user_list.php');
+            } else {
+                header('Location: /pages/profile.php');
+            }
+            exit;
+
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
-                $error = "Uživatelské jméno nebo e-mail již používá někdo jiný.";
+                $errors[] = "Uživatelské jméno nebo e-mail již používá někdo jiný.";
             } else {
-                $error = "Chyba databáze: " . $e->getMessage();
+                $errors[] = "Chyba databáze: " . $e->getMessage();
             }
         }
-    }
-
-    if ($success) {
-        if ($loggedInUser['role_id'] == 1 && $targetId != $loggedInUserId) {
-            header('Location: /pages/admin_user_list.php');
-        } else {
-            header('Location: /pages/profile.php');
-        }
-        exit;
     }
 }
 ?>
@@ -99,58 +129,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="container">
     <div class="form-box">
         
-        <?php if ($error): ?>
-            <p style="color: #ff6b6b; text-align: center;"><?php echo $error; ?></p>
+        <?php if (!empty($errors)): ?>
+            <div id="error-div">
+                <ul>
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         <?php endif; ?>
         
         <div class="wrapper">
             <div class="card">
                 <h2>Upravit profil</h2>
-                <form method="POST" action="#">
-                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($targetUser['id']); ?>">
+                <?php if($targetUser): ?>
+                    <form method="POST" action="#">
+                        <input type="hidden" name="id" value="<?php echo htmlspecialchars($targetUser['id']); ?>">
 
-                    <div class="form-group">
-                        <label for="jmeno">Jméno:</label>
-                        <input type="text" id="jmeno" name="jmeno" value="<?php echo htmlspecialchars($targetUser['jmeno']); ?>" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="jmeno">*Jméno:</label>
+                            <input type="text" id="jmeno" name="jmeno" value="<?php echo htmlspecialchars($val_jmeno); ?>" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="prijmeni">Příjmení:</label>
-                        <input type="text" id="prijmeni" name="prijmeni" value="<?php echo htmlspecialchars($targetUser['prijmeni']); ?>" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="prijmeni">*Příjmení:</label>
+                            <input type="text" id="prijmeni" name="prijmeni" value="<?php echo htmlspecialchars($val_prijmeni); ?>" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="usernameInput">Uživatelské jméno:</label>
-                        <input type="text" id="usernameInput" name="username" value="<?php echo htmlspecialchars($targetUser['username']); ?>" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="usernameInput">*Uživatelské jméno:</label>
+                            <input type="text" id="usernameInput" name="username" value="<?php echo htmlspecialchars($val_username); ?>" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="email">E-mail:</label>
-                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($targetUser['email']); ?>" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="email">*E-mail:</label>
+                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($val_email); ?>" required>
+                        </div>
 
-                    <?php if ($loggedInUser['role_id'] == 1): ?>
-                    <div class="form-group">
-                        <label for="role_id">Role (1=Admin, 2=User):</label>
-                        <select id="role_id" name="role_id">
-                            <option value="1" <?php echo ($targetUser['role_id'] == 1) ? 'selected' : ''; ?>>Admin (1)</option>
-                            <option value="2" <?php echo ($targetUser['role_id'] == 2) ? 'selected' : ''; ?>>User (2)</option>
-                        </select>
-                    </div>
-                    <?php endif; ?>
-
-                    <br>
-
-                    <div class="form-footer">
-                        <button type="submit" class="btn-submit">Uložit změny</button>
-                        
-                        <?php if ($loggedInUser['role_id'] == 1 && $targetId != $loggedInUserId): ?>
-                            <a href="/pages/admin_user_list.php">Zrušit</a>
-                        <?php else: ?>
-                            <a href="/pages/profile.php">Zrušit</a>
+                        <?php if ($loggedInUser['role_id'] == 1): ?>
+                        <div class="form-group">
+                            <label for="role_id">*Role (1=Admin, 2=User):</label>
+                            <select id="role_id" name="role_id">
+                                <option value="1" <?php echo ($val_role_id == 1) ? 'selected' : ''; ?>>Admin (1)</option>
+                                <option value="2" <?php echo ($val_role_id == 2) ? 'selected' : ''; ?>>User (2)</option>
+                            </select>
+                        </div>
                         <?php endif; ?>
-                    </div>
-                </form>
+
+                        <br>
+
+                        <div class="form-footer">
+                            <button type="submit" class="btn-submit">Uložit změny</button>
+
+                            <?php if ($loggedInUser['role_id'] == 1 && $targetId != $loggedInUserId): ?>
+                                <a href="/pages/admin_user_list.php">Zrušit</a>
+                            <?php else: ?>
+                                <a href="/pages/profile.php">Zrušit</a>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
     </div>

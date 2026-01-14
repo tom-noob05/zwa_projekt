@@ -78,7 +78,7 @@ try {
 
         <div class="table-wrapper">
             <?php if (isset($error)): ?>
-                <p style="color: red; text-align: center;"><?php echo $error; ?></p>
+                <p id="error-paragraph"><?php echo $error; ?></p>
             <?php endif; ?>
 
             <?php if (!empty($allUsers)): ?>

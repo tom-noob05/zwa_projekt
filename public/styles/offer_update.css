@@ -85,3 +85,16 @@ a {
     color: #D9D9D9;
     text-decoration: none;
 }
+
+#error-div {
+    background: #ff6b6b;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    color: white;
+    text-align: center;
+}
+
+#backtoprofile {
+    color: antiquewhite;
+}

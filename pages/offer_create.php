@@ -21,6 +21,13 @@ if (!isset($_SESSION['user_id'])) {
     die("Chyba: Uživatel není přihlášen.");
 }
 
+$title = '';
+$price = '';
+$category_id = '';
+$condition = '';
+$description = '';
+$errors = [];
+
 try {
     $stmt_cat = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
     $categories = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
@@ -30,14 +37,41 @@ try {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $title = $_POST['title'] ?? '';
-    $price = $_POST['price'] ?? 0;
-    $category_id = $_POST['category_id'] ?? null;
-    $condition = $_POST['condition'] ?? '';
-    $description = $_POST['description'] ?? '';
+    $title = trim($_POST['title'] ?? '');
+    $price = trim($_POST['price'] ?? '');
+    $category_id = $_POST['category_id'] ?? '';
+    $condition = trim($_POST['condition'] ?? '');
+    $description = trim($_POST['description'] ?? '');
     
     $seller_id = $_SESSION['user_id'];
     $status = 'active';
+
+    if (empty($title)) {
+        $errors[] = "Název inzerátu je povinný.";
+    } elseif (mb_strlen($title) > 45) {
+        $errors[] = "Název inzerátu je příliš dlouhý (max 45 znaků).";
+    }
+
+    if (empty($price)) {
+        $errors[] = "Cena je povinná.";
+    } elseif (!filter_var($price, FILTER_VALIDATE_FLOAT) || $price < 0) {
+        $errors[] = "Cena musí být kladné číslo.";
+    }
+
+    $allowedConditions = ['new', 'used', 'damaged'];
+    if (empty($condition)) {
+        $errors[] = "Stav zboží je povinný.";
+    } elseif (!in_array($condition, $allowedConditions)) {
+        $errors[] = "Neplatná hodnota pro stav zboží.";
+    }
+
+    if (empty($category_id) || !filter_var($category_id, FILTER_VALIDATE_INT)) {
+        $errors[] = "Vyberte prosím platnou kategorii.";
+    }
+
+    if (empty($description)) {
+        $errors[] = "Popis inzerátu je povinný.";
+    }
 
     $imagePath = null;
 
@@ -51,10 +85,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $fileTmpPath = $_FILES['image']['tmp_name'];
         $fileName = $_FILES['image']['name'];
         $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $fileSize = $_FILES['image']['size'];
         
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+        $maxFileSize = 5*1024*1024; // 5 MB
 
-        if (in_array($fileExtension, $allowedExtensions)) {
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            $errors[] = "Povolené formáty obrázku jsou: jpg, jpeg, png, webp.";
+        } elseif ($fileSize > $maxFileSize) {
+            $errors[] = "Obrázek je příliš velký (max 5 MB).";
+        } elseif (getimagesize($fileTmpPath) === false) {
+            $errors[] = "Soubor není platný obrázek.";
+        } else {
             $newFileName = uniqid('img_', true) . '.' . $fileExtension;
             $destPath = $uploadDir . $newFileName;
 
@@ -62,34 +104,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $imagePath = '/public/uploads/' . $newFileName;
             }
         }
+    } elseif (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $errors[] = "Chyba při nahrávání souboru (kód: " . $_FILES['image']['error'] . ").";
     }
 
-    $sql = "INSERT INTO offers (`title`, `description`, `price`, `status`, `condition`, `seller_id`, `category_id`, `img_path`) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    
-    try {
-        $stmt = $pdo->prepare($sql);
-        
-        $result = $stmt->execute([
-            $title, 
-            $description, 
-            $price, 
-            $status, 
-            $condition, 
-            $seller_id, 
-            $category_id,
-            $imagePath
-        ]);
 
-        if ($result) {
-            header("Location: ../index.php");
-            exit();
-        } else {
-            echo "Chyba při vkládání do databáze.";
+    if (empty($errors)){
+        $sql = "INSERT INTO offers (`title`, `description`, `price`, `status`, `condition`, `seller_id`, `category_id`, `img_path`) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            $stmt = $pdo->prepare($sql);
+
+            $result = $stmt->execute([
+                $title, 
+                $description, 
+                $price, 
+                $status, 
+                $condition, 
+                $seller_id, 
+                $category_id,
+                $imagePath
+            ]);
+
+            if ($result) {
+                header("Location: ../index.php");
+                exit();
+            } else {
+                echo "Chyba při vkládání do databáze.";
+            }
+
+        } catch (PDOException $e) {
+            echo "Chyba v SQL dotazu: " . $e->getMessage();
         }
-        
-    } catch (PDOException $e) {
-        echo "Chyba v SQL dotazu: " . $e->getMessage();
     }
 }
 ?>
@@ -106,12 +153,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php include '../includes/navbar.php';?>
     <div class="container">
         <div class="form-box">
+            <h2>Vytvořit nabídku</h2>
+
+            <?php if (!empty($errors)): ?>
+                <div class="error-div">
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= htmlspecialchars($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
             
             <form action="#" method="POST" enctype="multipart/form-data">
                 
                 <div class="form-group">
-                    <label for="title">Název:</label>
-                    <input type="text" id="title" name="title" required placeholder="Název">
+                    <label for="title">*Název:</label>
+                    <input type="text" id="title" name="title" required placeholder="Název" value="<?= htmlspecialchars($title) ?>">
                 </div>
 
                 <div class="form-group">
@@ -120,18 +178,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div class="form-group">
-                    <label for="price">Cena:</label>
-                    <input type="number" id="price" name="price" required placeholder="1000">
+                    <label for="price">*Cena:</label>
+                    <input type="number" id="price" name="price" required placeholder="1000" value="<?= htmlspecialchars($price) ?>">
                 </div>
 
                 <div class="form-group">
-                    <label for="category">Kategorie:</label>
+                    <label for="category">*Kategorie:</label>
                     <select id="category" name="category_id" required>
-                        <option value="" disabled selected>Vyberte kategorii</option>
+                        <option value="" disabled <?= empty($category_id) ? 'selected' : '' ?>>Vyberte kategorii</option>
                         
                         <?php if (!empty($categories)): ?>
                             <?php foreach ($categories as $cat): ?>
-                                <option value="<?= htmlspecialchars($cat['id']) ?>">
+                                <option value="<?= htmlspecialchars($cat['id']) ?>" <?= ($category_id == $cat['id']) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($cat['name']) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -143,18 +201,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div class="form-group">
-                    <label for="condition">Kondice:</label>
+                    <label for="condition">*Kondice:</label>
                     <select id="condition" name="condition" required>
-                        <option value="" disabled selected>Vyberte stav</option>
-                        <option value="new">Nové</option>
-                        <option value="used">Použité</option>
-                        <option value="damaged">Poškozené</option>
+                        <option value="" disabled <?= empty($condition) ? 'selected' : '' ?>>Vyberte stav</option>
+                        <option value="new" <?= ($condition === 'new') ? 'selected' : '' ?>>Nové</option>
+                        <option value="used" <?= ($condition === 'used') ? 'selected' : '' ?>>Použité</option>
+                        <option value="damaged" <?= ($condition === 'damaged') ? 'selected' : '' ?>>Poškozené</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Popis:</label>
-                    <textarea id="description" name="description" rows="4" required placeholder="Popište prodávaný předmět..."></textarea>
+                    <label for="description">*Popis:</label>
+                    <textarea id="description" name="description" rows="4" required placeholder="Popište prodávaný předmět..."><?= htmlspecialchars($description) ?></textarea>
                 </div>
 
                 <div class="form-footer">
